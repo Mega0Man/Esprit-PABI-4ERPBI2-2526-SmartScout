@@ -8,7 +8,7 @@ The goal of this project is to:
 
 This project is ideal for tracking performance, identifying trends, and supporting data-driven decision-making.
 ## Dataset used
-- <a href="">DataWarehouse Scouts</a>
+- <a href="https://github.com/Mega0Man/Esprit-PABI-4ERPBI2-2526-SmartScout/blob/main/dw_dw_f.bak">DataWarehouse Scouts</a>
 # Features
 ## Data Cleaning & Preparation
 - Handling missing values
