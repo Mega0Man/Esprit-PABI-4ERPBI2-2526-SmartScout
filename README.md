@@ -7,3 +7,26 @@ The goal of this project is to:
 - Visualize insights in a user-friendly dashboard
 
 This project is ideal for tracking performance, identifying trends, and supporting data-driven decision-making.
+## Dataset used
+- <a href="">DataWarehouse Scouts</a>
+# Features
+## Data Cleaning & Preparation
+- Handling missing values
+- Standardizing formats
+- Structuring datasets for analysis
+## Interactive Dashboard
+- Clear visualization of KPIs
+- Filters (e.g., by unit, season, category, gender)
+- Easy-to-read charts (pie charts, bar charts, etc.)
+
+# Key Metrics (KPIs) by decision maker
+## Chief Scout Group Leader
+- Total of active members
+- Average member per unit
+- Total of leaders
+- Percentage of members by filter
+## Treasurer
+- Budget Used
+## Unit Leaders
+- Participation rate
+- Activity distribution
