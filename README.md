@@ -34,7 +34,8 @@ This project is ideal for tracking performance, identifying trends, and supporti
 ## Unit Leaders
 - Participation rate
 - Activity distribution
-
+# DW Schema
+![DataWarehouse Schema](https://github.com/Mega0Man/Esprit-PABI-4ERPBI2-2526-SmartScout/blob/main/Capture%20d'%C3%A9cran%202026-04-05%20010650.png)
 # View dashboard
 - <a href="https://github.com/Mega0Man/Esprit-PABI-4ERPBI2-2526-SmartScout/blob/main/dw_dw_f.bak">Chief Scout Group Leader Dashboard</a>
 - <a href="https://github.com/Mega0Man/Esprit-PABI-4ERPBI2-2526-SmartScout/blob/main/dw_dw_f.bak">Treasurer Dashboard</a>
