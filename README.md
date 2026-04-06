@@ -31,9 +31,11 @@ This project is ideal for tracking performance, identifying trends, and supporti
 - Percentage of members by filter
 ## Treasurer
 - Budget Used
+- Cost by activity
 ## Unit Leaders
 - Participation rate
 - Activity distribution
+- Total participation
 # DW Schema
 ![DataWarehouse Schema](https://github.com/Mega0Man/Esprit-PABI-4ERPBI2-2526-SmartScout/blob/main/Capture%20d'%C3%A9cran%202026-04-05%20010650.png)
 # View dashboard
