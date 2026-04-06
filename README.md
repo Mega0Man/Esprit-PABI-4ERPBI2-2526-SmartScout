@@ -40,5 +40,5 @@ This project is ideal for tracking performance, identifying trends, and supporti
 ![DataWarehouse Schema](https://github.com/Mega0Man/Esprit-PABI-4ERPBI2-2526-SmartScout/blob/main/Capture%20d'%C3%A9cran%202026-04-05%20010650.png)
 # View dashboard
 - <a href="https://github.com/Mega0Man/Esprit-PABI-4ERPBI2-2526-SmartScout/blob/main/Chef%20de%20groupe.pbix">Chief Scout Group Leader Dashboard</a>
-- <a href="https://github.com/Mega0Man/Esprit-PABI-4ERPBI2-2526-SmartScout/blob/main/dw_dw_f.bak">Treasurer Dashboard</a>
+- <a href="https://github.com/Mega0Man/Esprit-PABI-4ERPBI2-2526-SmartScout/blob/main/Treasurer.pbix">Treasurer Dashboard</a>
 - <a href="https://github.com/Mega0Man/Esprit-PABI-4ERPBI2-2526-SmartScout/blob/main/Chef%20d'unite.pbix">Unit Leaders Dashboard</a>
