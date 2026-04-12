@@ -43,4 +43,4 @@ This project is ideal for tracking performance, identifying trends, and supporti
 - <a href="https://github.com/Mega0Man/Esprit-PABI-4ERPBI2-2526-SmartScout/blob/main/Treasurer.pbix">Treasurer Dashboard</a>
 - <a href="https://github.com/Mega0Man/Esprit-PABI-4ERPBI2-2526-SmartScout/blob/main/Chef%20d'unite.pbix">Unit Leaders Dashboard</a>
 # Machine Learning notebook
-- <a href=""></a>
+- <a href="https://github.com/Mega0Man/Esprit-PABI-4ERPBI2-2526-SmartScout/blob/main/ML_Scouts.ipynb"></a>
