@@ -1,10 +1,16 @@
 <div class="home-container">
   <!-- HEADER -->
   <header class="home-header">
-    <div class="home-logo">⚜️</div>
-    <div>
-      <span class="home-org-name">Grombalia Scout Group</span>
-      <span class="home-org-motto">UNITY &bull; SERVICE &bull; BROTHERHOOD</span>
+    <div class="header-left">
+      <div class="home-logo">⚜️</div>
+      <div>
+        <span class="home-org-name">{{ getTranslation('app_name') }}</span>
+        <span class="home-org-motto">UNITY &bull; SERVICE &bull; BROTHERHOOD</span>
+      </div>
+    </div>
+    <div class="lang-switcher" *ngIf="currentLang$ | async as lang">
+      <button (click)="setLang('fr')" [class.active]="lang === 'fr'">FR</button>
+      <button (click)="setLang('en')" [class.active]="lang === 'en'">EN</button>
     </div>
   </header>
 
@@ -12,12 +18,12 @@
   <div class="home-body">
     <!-- LEFT TEXT -->
     <div class="home-left">
-      <h1 class="home-welcome-title">WELCOME!</h1>
+      <h1 class="home-welcome-title">{{ getTranslation('welcome') }}!</h1>
       <span class="home-fleur">⚜</span>
-      <p class="home-choose-title">CHOOSE YOUR DASHBOARD</p>
-      <p class="home-choose-sub">Select your role to access<br>your dashboard</p>
+      <p class="home-choose-title">{{ (currentLang$ | async) === 'fr' ? 'CHOISISSEZ VOTRE TABLEAU DE BORD' : 'CHOOSE YOUR DASHBOARD' }}</p>
+      <p class="home-choose-sub">{{ (currentLang$ | async) === 'fr' ? 'Sélectionnez votre rôle pour accéder à votre espace' : 'Select your role to access your dashboard' }}</p>
       <div class="home-quote">
-        <p>To serve, to help,<br>to build a better world.</p>
+        <p>{{ (currentLang$ | async) === 'fr' ? 'Servir, aider, construire un monde meilleur.' : 'To serve, to help, to build a better world.' }}</p>
       </div>
     </div>
 
@@ -47,8 +53,8 @@
     <!-- GREEN: left finger -->
     <div class="role-button green" (click)="goToLogin('unit_leader')">
       <div class="role-button-label">
-        <span class="lbl-name">UNIT LEADER</span>
-        <span class="lbl-sub">Dashboard</span>
+        <span class="lbl-name">{{ getTranslation('unit_leader') | uppercase }}</span>
+        <span class="lbl-sub">{{ getTranslation('dashboard') }}</span>
       </div>
       <span class="role-icon">👤</span>
     </div>
@@ -56,8 +62,8 @@
     <!-- GOLD: middle finger -->
     <div class="role-button gold" (click)="goToLogin('treasurer')">
       <div class="role-button-label">
-        <span class="lbl-name">TREASURER</span>
-        <span class="lbl-sub">Dashboard</span>
+        <span class="lbl-name">{{ getTranslation('treasurer') | uppercase }}</span>
+        <span class="lbl-sub">{{ getTranslation('dashboard') }}</span>
       </div>
       <span class="role-icon">💰</span>
     </div>
@@ -65,8 +71,8 @@
     <!-- BLUE: right finger -->
     <div class="role-button blue" (click)="goToLogin('group_leader')">
       <div class="role-button-label">
-        <span class="lbl-name">GROUP LEADER</span>
-        <span class="lbl-sub">Dashboard</span>
+        <span class="lbl-name">{{ getTranslation('group_leader') | uppercase }}</span>
+        <span class="lbl-sub">{{ getTranslation('dashboard') }}</span>
       </div>
       <span class="role-icon">👥</span>
     </div>
@@ -74,9 +80,9 @@
 
   <!-- BOTTOM VALUES BAR -->
   <footer class="home-values-bar">
-    <div class="value-item"><span class="value-icon">⛺</span><span class="value-label">Adventure</span></div>
-    <div class="value-item"><span class="value-icon">🤝</span><span class="value-label">Teamwork</span></div>
-    <div class="value-item"><span class="value-icon">🔥</span><span class="value-label">Values</span></div>
-    <div class="value-item"><span class="value-icon">🧭</span><span class="value-label">Leadership</span></div>
+    <div class="value-item"><span class="value-icon">⛺</span><span class="value-label">{{ getTranslation('adventure') }}</span></div>
+    <div class="value-item"><span class="value-icon">🤝</span><span class="value-label">{{ getTranslation('teamwork') }}</span></div>
+    <div class="value-item"><span class="value-icon">🔥</span><span class="value-label">{{ getTranslation('values') }}</span></div>
+    <div class="value-item"><span class="value-icon">🧭</span><span class="value-label">{{ getTranslation('leadership') }}</span></div>
   </footer>
 </div>

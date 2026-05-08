@@ -1,19 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { ApiService } from '../services/api.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { LanguageService, Lang } from '../services/language.service';
+import { AudioService } from '../services/audio.service';
+import { Subscription, filter } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   role!: string;
   roleConfig: any;
   currentUser: any;
+  currentLang$ = this.languageService.currentLang$;
+  private subs = new Subscription();
   forecastingForm!: FormGroup;
   classificationForm!: FormGroup;
   anomalyForm!: FormGroup;
@@ -68,10 +73,21 @@ export class DashboardComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private apiService: ApiService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private languageService: LanguageService,
+    private audioService: AudioService
   ) { }
 
   ngOnInit(): void {
+    // Stopper l'audio lors du changement de route
+    this.subs.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd)
+      ).subscribe(() => {
+        this.audioService.stop();
+      })
+    );
+
     this.currentUser = this.authService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['/']);
@@ -96,7 +112,34 @@ export class DashboardComponent implements OnInit {
     this.recommendationForm = this.fb.group({ scout_id: [1, Validators.required], activity_preferences: [''] });
   }
 
+  ngOnDestroy(): void {
+    this.audioService.stop();
+    this.subs.unsubscribe();
+  }
+
+  setLang(lang: Lang): void {
+    this.audioService.stop();
+    this.languageService.setLanguage(lang);
+  }
+
+  getTranslation(key: string): string {
+    return this.languageService.translate(key);
+  }
+
+  getAudioText(lang: Lang): string {
+    const roleKey = this.role === 'group_leader' ? 'group_leader' : 
+                   this.role === 'treasurer' ? 'treasurer' : 'unit_leader';
+    const roleName = this.getTranslation(roleKey);
+    
+    if (lang === 'fr') {
+      return `Vous êtes sur la page d'accueil du tableau de bord ${roleName}`;
+    } else {
+      return `You are on the overview page of the ${roleName} dashboard`;
+    }
+  }
+
   logout(): void {
+    this.audioService.stop();
     this.authService.logout();
     this.router.navigate(['/']);
   }

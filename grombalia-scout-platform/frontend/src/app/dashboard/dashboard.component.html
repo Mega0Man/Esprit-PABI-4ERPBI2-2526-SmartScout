@@ -3,25 +3,41 @@
     <div class="nav-left">
       <div class="nav-logo">🌿</div>
       <div class="nav-title">
-        <h2>GROMBALIA SCOUT GROUP</h2>
-        <p>{{ roleConfig?.name }} Dashboard</p>
+        <h2>{{ getTranslation('app_name') }}</h2>
+        <p>{{ getTranslation(role) }} {{ getTranslation('dashboard') }}</p>
       </div>
     </div>
     <div class="nav-right">
-      <div class="ml-buttons">
-        <button *ngIf="role === 'group_leader'" class="ml-nav-btn" (click)="openModel('forecast')">📊 Scout Forecast</button>
-        <button *ngIf="role === 'group_leader'" class="ml-nav-btn" (click)="openModel('classification')">🏷️ Classification</button>
-        <button *ngIf="role === 'treasurer'" class="ml-nav-btn" (click)="openModel('anomaly')">⚠️ Anomaly Detection</button>
-        <button *ngIf="role === 'unit_leader'" class="ml-nav-btn" (click)="openModel('recommendation')">🎯 Recommendation</button>
+      <div class="lang-switcher" *ngIf="currentLang$ | async as lang">
+        <button (click)="setLang('fr')" [class.active]="lang === 'fr'">FR</button>
+        <button (click)="setLang('en')" [class.active]="lang === 'en'">EN</button>
       </div>
-      <span class="user-info">Welcome, {{ currentUser?.username }}</span>
-      <button class="logout-btn" (click)="logout()">Logout</button>
+      <div class="ml-buttons">
+        <button *ngIf="role === 'group_leader'" class="ml-nav-btn" (click)="openModel('forecast')">📊 {{ getTranslation('scout_forecast') }}</button>
+        <button *ngIf="role === 'group_leader'" class="ml-nav-btn" (click)="openModel('classification')">🏷️ {{ getTranslation('classification') }}</button>
+        <button *ngIf="role === 'treasurer'" class="ml-nav-btn" (click)="openModel('anomaly')">⚠️ {{ getTranslation('anomaly_detection') }}</button>
+        <button *ngIf="role === 'unit_leader'" class="ml-nav-btn" (click)="openModel('recommendation')">🎯 {{ getTranslation('recommendation') }}</button>
+      </div>
+      <span class="user-info">{{ getTranslation('welcome') }}, {{ currentUser?.username }}</span>
+      <button class="logout-btn" (click)="logout()">{{ getTranslation('logout') }}</button>
     </div>
   </nav>
   <main class="dashboard-content">
+    <div class="page-header-with-audio" *ngIf="currentLang$ | async as lang">
+      <div class="header-titles">
+        <h2>{{ getTranslation(role) }} {{ getTranslation('overview') }}</h2>
+        <p *ngIf="lang === 'fr'">Bienvenue sur votre espace de pilotage scout.</p>
+        <p *ngIf="lang === 'en'">Welcome to your scout management space.</p>
+      </div>
+      <app-audio-button 
+        [text]="getAudioText(lang)" 
+        [lang]="lang">
+      </app-audio-button>
+    </div>
+
     <section class="dashboard-section">
       <div class="section-header">
-        <h3>📊 Power BI Reports</h3>
+        <h3>📊 {{ getTranslation('power_bi_reports') }}</h3>
       </div>
       <div class="card powerbi-card">
         <iframe *ngIf="roleConfig?.powerBIUrl" [src]="roleConfig?.powerBIUrl" class="powerbi-iframe" frameborder="0" allowfullscreen="true"></iframe>

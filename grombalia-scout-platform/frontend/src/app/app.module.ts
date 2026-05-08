@@ -10,6 +10,8 @@ import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FaceRecognitionComponent } from './face-recognition/face-recognition.component';
 
+import { SharedModule } from './shared/shared.module';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,9 +23,10 @@ import { FaceRecognitionComponent } from './face-recognition/face-recognition.co
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule,
+    HttpClientModule,
     FormsModule,
-    HttpClientModule
+    ReactiveFormsModule,
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]

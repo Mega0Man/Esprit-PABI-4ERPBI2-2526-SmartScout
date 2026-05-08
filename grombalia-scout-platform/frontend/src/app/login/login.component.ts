@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { FaceRecognitionComponent } from '../face-recognition/face-recognition.component';
+import { LanguageService, Lang } from '../services/language.service';
+import { AudioService } from '../services/audio.service';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +19,7 @@ export class LoginComponent implements OnInit {
   roleConfig: any;
   error: string = '';
   loading: boolean = false;
+  currentLang$ = this.languageService.currentLang$;
   
   activeTab: 'password' | 'face' = 'password';
   faceMode: 'login' | 'register' = 'login';
@@ -60,8 +63,19 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private languageService: LanguageService,
+    private audioService: AudioService
   ) { }
+
+  getTranslation(key: string): string {
+    return this.languageService.translate(key);
+  }
+
+  setLang(lang: Lang): void {
+    this.audioService.stop();
+    this.languageService.setLanguage(lang);
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
