@@ -1,0 +1,23 @@
+artifact_path: file:///c:/Users/mezen/Desktop/mlops/mlflow/mlartifacts/3/models/m-b84840a022164960afb744edfb68aef4/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.10.1
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.4.2
+    skops_trusted_types: null
+mlflow_version: 3.11.1
+model_id: m-b84840a022164960afb744edfb68aef4
+model_size_bytes: 37531
+model_uuid: m-b84840a022164960afb744edfb68aef4
+prompts: null
+run_id: 2ccd8f37214d46da930d5debbe486db0
+utc_time_created: '2026-05-03 00:22:47.371161'

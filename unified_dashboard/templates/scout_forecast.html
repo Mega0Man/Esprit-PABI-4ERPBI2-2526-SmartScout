@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Activity Participation Forecast</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0b1d13; --card: #12281b;
+    --border: rgba(255,255,255,0.08);
+    --accent: #22c55e; --text: #ecfdf5; --muted: #94a3b8;
+    --input-bg: #1b3a2b;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    background: var(--bg); color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh; display:flex;
+    align-items:center; justify-content:center; padding:2rem;
+}
+body::before {
+    content:''; position:fixed; inset:0;
+    background-image:
+        linear-gradient(rgba(34,197,94,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34,197,94,0.05) 1px, transparent 1px);
+    background-size:40px 40px; pointer-events:none;
+}
+.wrapper { width:100%; max-width:560px; }
+.back-btn { display: inline-block; background: rgba(255,255,255,0.1); color: var(--text); padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; margin-bottom: 2rem; font-weight: 500; border:1px solid var(--border); }
+.back-btn:hover { background: rgba(255,255,255,0.15); }
+.badge {
+    display:inline-block; background:rgba(34,197,94,0.15);
+    color:var(--accent); border:1px solid rgba(34,197,94,0.3);
+    border-radius:50px; font-size:0.7rem; padding:0.3rem 0.9rem; margin-bottom:1rem;
+}
+h1 { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; }
+h1 span { color: var(--accent); }
+.subtitle { color:var(--muted); font-size:0.9rem; margin-top:0.3rem; }
+.card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:20px; padding:2rem; margin-top:2rem;
+}
+label {
+    font-size:0.75rem; color:var(--muted);
+    text-transform:uppercase; display:block; margin-bottom:5px;
+}
+select {
+    width:100%; background:var(--input-bg); border:1px solid var(--border);
+    border-radius:10px; color:var(--text); padding:0.75rem 0.9rem;
+    font-size:1rem; margin-bottom:1rem; cursor:pointer;
+    appearance:none; -webkit-appearance:none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+}
+select:focus {
+    border-color:var(--accent); outline:none;
+    box-shadow:0 0 0 3px rgba(34,197,94,0.2);
+}
+select option { background: #12281b; color: var(--text); }
+button {
+    width:100%; padding:0.9rem; background:var(--accent);
+    color:#022c22; font-weight:700; border-radius:12px;
+    cursor:pointer; border:none; font-size:1rem; margin-top:0.5rem;
+}
+button:hover { opacity:0.9; }
+.result { margin-top:1.5rem; padding:1.4rem; border-radius:14px; }
+.result.success { background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); }
+.result.error   { background:rgba(239,68,68,0.1);  border:1px solid rgba(239,68,68,0.3); }
+.forecast-box {
+    background:rgba(255,255,255,0.05); border-radius:10px;
+    padding:1.2rem; text-align:center; margin-top:1rem;
+}
+.forecast-box .model  { font-size:0.7rem; color:var(--muted); text-transform:uppercase; }
+.forecast-box .value  { font-size:2rem; font-weight:700; color:var(--accent); margin:0.4rem 0; }
+.forecast-box .delta  { font-size:0.85rem; }
+.delta.up   { color: #22c55e; }
+.delta.down { color: #ef4444; }
+.history { margin-top:1.2rem; border-top:1px solid var(--border); padding-top:1rem; }
+.history h4 { font-size:0.8rem; color:var(--muted); text-transform:uppercase; margin-bottom:0.5rem; }
+.history-row {
+    display:flex; justify-content:space-between;
+    font-size:0.85rem; padding:4px 0;
+    border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.history-row:last-child { border-bottom:none; }
+.history-row .season { color:var(--muted); }
+.history-row .val    { color:var(--text); font-weight:500; }
+.incomplete-badge {
+    display:inline-block; background:rgba(245,158,11,0.15);
+    color:#f59e0b; border:1px solid rgba(245,158,11,0.3);
+    border-radius:6px; font-size:0.72rem; padding:2px 8px; margin-top:4px;
+}
+.footer { text-align:center; margin-top:1.5rem; font-size:0.75rem; color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <a href="/" class="back-btn">← Back to Dashboard</a>
+  <div style="text-align:center; margin-bottom:1.5rem;">
+    <div class="badge">🌲 Scout Forecast AI</div>
+    <h1>Participation <span>Forecast</span></h1>
+    <p class="subtitle">ARIMA-powered prediction for scout activity participation</p>
+  </div>
+
+  <div class="card">
+    <form method="POST">
+
+      <label>Select Unit (optional)</label>
+      <select name="unit_id">
+        <option value="">All Units</option>
+        <option value="1">1 — الأشبال</option>
+        <option value="2">2 — الزهرات</option>
+        <option value="3">3 — الكشافة</option>
+        <option value="4">4 — المرشدات</option>
+        <option value="5">5 — الجوالة</option>
+        <option value="6">6 — الدليلات</option>
+      </select>
+
+      <button type="submit">🔍 Run Forecast</button>
+    </form>
+
+    {% if error %}
+    <div class="result error">
+      <strong>Error:</strong> {{ error }}
+    </div>
+    {% endif %}
+
+    {% if result %}
+    <div class="result success">
+      <p style="font-size:0.8rem; color:var(--muted);">
+        Forecasting for <strong>{{ result.next_season }}</strong>
+        &nbsp;·&nbsp; Unit: <strong>{{ result.unit_id }}</strong>
+        &nbsp;·&nbsp; ARIMA{{ result.best_arima_order }}
+        {% if result.incomplete_season %}
+        <br><span class="incomplete-badge">⚠ {{ result.incomplete_season }} excluded (incomplete)</span>
+        {% endif %}
+      </p>
+
+      <div class="forecast-box">
+        <div class="model">ARIMA Forecast — {{ result.next_season }}</div>
+        <div class="value">
+          {% if result.forecast is defined and result.forecast is not none %}
+            {{ "{:,}".format(result.forecast) }}
+          {% else %}
+            —
+          {% endif %}
+        </div>
+        {% if result.delta_percent is defined and result.delta_percent is not none %}
+        <div class="delta {{ 'up' if result.delta_percent > 0 else 'down' }}">
+          {{ '▲' if result.delta_percent > 0 else '▼' }}
+          {{ result.delta_percent }}% vs last season
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="history">
+        <h4>Historical (complete seasons)</h4>
+        {% if result.history is defined and result.history %}
+        {% for season, val in result.history.items() %}
+        <div class="history-row">
+          <span class="season">{{ season }}</span>
+          <span class="val">{{ "{:,}".format(val) }}</span>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="history-row">
+          <span class="season">No history available</span>
+          <span class="val">—</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <p class="footer">Model: ARIMA · Synthetic augmentation (8 seasons) · Scout Treasury System</p>
+</div>
+</body>
+</html>

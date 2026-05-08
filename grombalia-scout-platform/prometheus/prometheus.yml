@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'fastapi'
+    static_configs:
+      - targets: ['backend:8000']
+
+  - job_name: 'fastapi-group-leader'
+    metrics_path: '/metrics/group_leader'
+    static_configs:
+      - targets: ['backend:8000']
+
+  - job_name: 'fastapi-treasurer'
+    metrics_path: '/metrics/treasurer'
+    static_configs:
+      - targets: ['backend:8000']
+
+  - job_name: 'fastapi-unit-leader'
+    metrics_path: '/metrics/unit_leader'
+    static_configs:
+      - targets: ['backend:8000']

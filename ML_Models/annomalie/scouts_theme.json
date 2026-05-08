@@ -1,0 +1,73 @@
+{
+  "name": "Scouts Nature Premium",
+  "dataColors": [
+    "#1B4332",
+    "#2D6A4F",
+    "#40916C",
+    "#52B788",
+    "#74C69D",
+    "#F4A261",
+    "#E9C46A",
+    "#A7C957"
+  ],
+  "background": "#F6F7F2",
+  "foreground": "#1B4332",
+  "tableAccent": "#2D6A4F",
+
+  "visualStyles": {
+    "*": {
+      "*": {
+        "fontFamily": [{ "value": "Segoe UI" }],
+        "fontSize": [{ "value": 12 }]
+      }
+    },
+
+    "page": {
+      "*": {
+        "background": [{
+          "color": { "solid": { "color": "#F6F7F2" } },
+          "transparency": 0
+        }]
+      }
+    },
+
+    "card": {
+      "*": {
+        "background": [{
+          "color": { "solid": { "color": "#FFFFFF" } }
+        }],
+        "calloutValue": [{
+          "color": { "solid": { "color": "#1B4332" } },
+          "fontSize": 30
+        }],
+        "categoryLabel": [{
+          "color": { "solid": { "color": "#6B7D6A" } }
+        }]
+      }
+    },
+
+    "slicer": {
+      "*": {
+        "header": [{
+          "fontColor": { "solid": { "color": "#1B4332" } },
+          "background": { "solid": { "color": "#A7C957" } }
+        }]
+      }
+    },
+
+    "tableEx": {
+      "*": {
+        "header": [{
+          "fontColor": { "solid": { "color": "#FFFFFF" } },
+          "backColor": { "solid": { "color": "#2D6A4F" } }
+        }]
+      }
+    },
+
+    "lineChart": {
+      "*": {
+        "lineWidth": [{ "value": 3 }]
+      }
+    }
+  }
+}

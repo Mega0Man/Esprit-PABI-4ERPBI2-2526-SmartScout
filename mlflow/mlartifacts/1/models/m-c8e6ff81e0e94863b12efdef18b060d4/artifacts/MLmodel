@@ -1,0 +1,20 @@
+artifact_path: file:///c:/Users/mezen/Desktop/mlops/mlflow/mlartifacts/1/models/m-c8e6ff81e0e94863b12efdef18b060d4/artifacts
+flavors:
+  python_function:
+    data: model.statsmodels
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.statsmodels
+    python_version: 3.10.1
+  statsmodels:
+    code: null
+    data: model.statsmodels
+    statsmodels_version: 0.14.6
+mlflow_version: 3.11.1
+model_id: m-c8e6ff81e0e94863b12efdef18b060d4
+model_size_bytes: 34381
+model_uuid: m-c8e6ff81e0e94863b12efdef18b060d4
+prompts: null
+run_id: 3d9ae8ae43e34bb78a429a3f4dffd694
+utc_time_created: '2026-05-03 00:22:09.358472'

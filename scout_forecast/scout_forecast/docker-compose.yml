@@ -1,0 +1,77 @@
+services:
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: scout_mlflow
+    ports:
+      - "5000:5000"
+    environment:
+      - MLFLOW_TRACKING_URI=sqlite:///mlflow.db
+    volumes:
+      - mlflow_data:/app/mlruns
+    networks:
+      - scout_network
+    command: mlflow ui --backend-store-uri sqlite:///mlflow.db --host 0.0.0.0
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: scout_api
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_URL=postgresql+psycopg2://postgres:12345678@postgres:5432/New_DWw
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - mlflow
+    networks:
+      - scout_network
+    volumes:
+      - ./models:/app/models
+
+  postgres:
+    image: postgres:15
+    container_name: scout_postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345678
+      - POSTGRES_DB=New_DWw
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - scout_network
+
+  webapp:
+    image: python:3.10-slim
+    container_name: scout_webapp
+    ports:
+      - "5001:5000"
+    environment:
+      - API_URL=http://api:8000
+      - FLASK_ENV=development
+    volumes:
+      - ./app.py:/app/app.py
+      - ./model.py:/app/model.py
+      - ./budget_model.py:/app/budget_model.py
+      - ./config.py:/app/config.py
+      - ./requirements.txt:/app/requirements.txt
+      - ./templates:/app/templates
+    working_dir: /app
+    command: >
+      sh -c "pip install --no-cache-dir -r requirements.txt &&
+             python app.py"
+    depends_on:
+      - api
+    networks:
+      - scout_network
+
+volumes:
+  mlflow_data:
+  postgres_data:
+
+networks:
+  scout_network:
+    driver: bridge

@@ -1,0 +1,10 @@
+ cd c:\Users\mezen\Desktop\mlops\unified_dashboard
+python run_all.py
+
+
+cd c:\Users\mezen\Desktop\mlops\grombalia-scout-platform\backend
+python main.py
+
+
+cd c:\Users\mezen\Desktop\mlops\grombalia-scout-platform\frontend-simple
+python -m http.server 4200

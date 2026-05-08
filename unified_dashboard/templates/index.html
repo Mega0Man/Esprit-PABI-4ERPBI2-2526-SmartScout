@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MLOps Unified Dashboard · Scout Treasury</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg:       #0b1d13;
+    --card:     #12281b;
+    --card-hover: #172f20;
+    --border:   rgba(255,255,255,0.08);
+    --accent:   #22c55e;
+    --accent2:  #4ade80;
+    --danger:   #ef4444;
+    --warn:     #f59e0b;
+    --text:     #ecfdf5;
+    --muted:    #94a3b8;
+    --input-bg: #1b3a2b;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 2rem 1.5rem 4rem;
+}
+
+/* ── forest grid overlay ────────────────────────────── */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(34,197,94,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34,197,94,0.045) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── radial glow behind header ──────────────────────── */
+body::after {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 500px;
+    background: radial-gradient(ellipse at center, rgba(34,197,94,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* ── header ─────────────────────────────────────────── */
+.header {
+    text-align: center;
+    padding: 3rem 0 3.5rem;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(34,197,94,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 0.35rem 1rem;
+    margin-bottom: 1.2rem;
+    text-transform: uppercase;
+}
+
+.badge .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+}
+
+h1 span { color: var(--accent); }
+
+.subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* ── divider ─────────────────────────────────────────── */
+.divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin-bottom: 3rem;
+}
+
+/* ── section label ───────────────────────────────────── */
+.section-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+/* ── grid ────────────────────────────────────────────── */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+}
+
+/* ── service card ────────────────────────────────────── */
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.75rem;
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(34,197,94,0.06) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px rgba(34,197,94,0.2);
+    border-color: rgba(34,197,94,0.25);
+    background: var(--card-hover);
+}
+
+.card:hover::before { opacity: 1; }
+
+/* card top row */
+.card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.icon-wrap {
+    width: 48px;
+    height: 48px;
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.2);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    transition: background 0.25s ease;
+}
+.card:hover .icon-wrap {
+    background: rgba(34,197,94,0.18);
+}
+
+/* status dot */
+.status {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2.5s ease-in-out infinite;
+}
+.status-dot.off { background: var(--muted); animation: none; }
+
+/* card body */
+.card h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.card p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.55;
+    flex: 1;
+}
+
+/* tag strip */
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.25rem;
+}
+
+.tag {
+    font-size: 0.62rem;
+    background: rgba(34,197,94,0.08);
+    color: var(--accent2);
+    border: 1px solid rgba(34,197,94,0.18);
+    border-radius: 50px;
+    padding: 0.2rem 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* arrow indicator */
+.card-arrow {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.75rem;
+    color: var(--muted);
+    font-size: 1rem;
+    transition: transform 0.25s ease, color 0.25s ease;
+}
+.card:hover .card-arrow {
+    transform: translate(3px, -3px);
+    color: var(--accent);
+}
+
+/* ── port strip ──────────────────────────────────────── */
+.port-strip {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 0.1rem;
+}
+.port-strip code {
+    font-family: 'DM Sans', monospace;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.68rem;
+    color: var(--accent2);
+}
+
+/* ── footer ──────────────────────────────────────────── */
+.footer {
+    text-align: center;
+    margin-top: 4rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+.footer a { color: var(--accent); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+/* ── Train Panel ─────────────────────────────────────── */
+.train-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 2.5rem;
+    transition: border-color 0.25s ease, background 0.25s ease;
+}
+.train-panel:hover {
+    border-color: rgba(34,197,94,0.25);
+    background: var(--card-hover);
+}
+.train-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.train-header h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+}
+.btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.btn:hover:not(:disabled) {
+    background: var(--accent2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34,197,94,0.3);
+}
+.btn:disabled {
+    background: rgba(255,255,255,0.1);
+    color: var(--muted);
+    cursor: not-allowed;
+}
+.train-status-container {
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+}
+.train-model-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.train-model-row:last-child {
+    border-bottom: none;
+}
+.model-name {
+    font-weight: 500;
+    min-width: 150px;
+}
+.model-status-badge {
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    min-width: 70px;
+    text-align: center;
+}
+.status-idle { background: rgba(255,255,255,0.08); color: var(--muted); }
+.status-running { background: rgba(245,158,11,0.1); color: var(--warn); }
+.status-done { background: rgba(34,197,94,0.1); color: var(--accent); }
+.status-error { background: rgba(239,68,68,0.1); color: var(--danger); }
+.model-msg {
+    color: var(--muted);
+    font-size: 0.75rem;
+    margin-left: 1rem;
+    flex: 1;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: monospace;
+}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <!-- ── Header ─────────────────────────────────────── -->
+    <div class="header">
+        <div class="badge">
+            <span class="dot"></span>
+            🌲 Scout Treasury · MLOps Platform
+        </div>
+        <h1>Unified <span>AI</span> Dashboard</h1>
+        <p class="subtitle">
+            All machine-learning services for the Scout Treasury system in one place.
+            Click any card to open the tool.
+        </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ── Retrain Panel ───────────────────────────────── -->
+    <div class="train-panel">
+        <div class="train-header">
+            <div>
+                <h3>MLOps Pipeline</h3>
+                <p class="subtitle" style="font-size:0.8rem">Retrain all models and log metrics to MLflow.</p>
+            </div>
+            <button id="btn-train" class="btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.92-10.34l5.67-5.67"/></svg>
+                Retrain All Models
+            </button>
+        </div>
+        <div id="train-status" class="train-status-container" style="display:none;">
+            <div id="train-models-list"></div>
+        </div>
+    </div>
+
+    <!-- ── Service cards ───────────────────────────────── -->
+    <p class="section-label">AI Services</p>
+
+    <div class="grid">
+
+        <!-- Scout Forecast -->
+        <a href="/scout_forecast" class="card" id="card-scout-forecast">
+            <div class="card-top">
+                <div class="icon-wrap">🌲</div>
+                <div class="status">
+                    <span class="status-dot"></span>
+                    Live
+                </div>
+            </div>
+            <h2>Scout Forecast</h2>
+            <p>ARIMA-powered participation &amp; budget forecasting across scout seasons and units.</p>
+            <div class="tags">
+                <span class="tag">ARIMA</span>
+                <span class="tag">Time Series</span>
+                <span class="tag">Forecast</span>
+            </div>
+            <div class="port-strip">API <code>:8001</code></div>
+            <span class="card-arrow">↗</span>
+        </a>
+
+        <!-- Anomaly Detection -->
+        <a href="/annomalie" class="card" id="card-anomaly">
+            <div class="card-top">
+                <div class="icon-wrap">🛡️</div>
+                <div class="status">
+                    <span class="status-dot"></span>
+                    Live
+                </div>
+            </div>
+            <h2>Anomaly Detection</h2>
+            <p>Detect unusual budget transactions using the IQR statistical method.</p>
+            <div class="tags">
+                <span class="tag">IQR</span>
+                <span class="tag">Finance</span>
+                <span class="tag">Alert</span>
+            </div>
+            <div class="port-strip">API <code>:8004</code></div>
+            <span class="card-arrow">↗</span>
+        </a>
+
+        <!-- Retention Classification -->
+        <a href="/classification" class="card" id="card-classification">
+            <div class="card-top">
+                <div class="icon-wrap">📊</div>
+                <div class="status">
+                    <span class="status-dot"></span>
+                    Live
+                </div>
+            </div>
+            <h2>Retention Prediction</h2>
+            <p>Predict whether a unit will achieve high member retention using Random Forest.</p>
+            <div class="tags">
+                <span class="tag">Random Forest</span>
+                <span class="tag">Classification</span>
+            </div>
+            <div class="port-strip">API <code>:8005</code></div>
+            <span class="card-arrow">↗</span>
+        </a>
+
+        <!-- Recommendation -->
+        <a href="/recommandation" class="card" id="card-recommendation">
+            <div class="card-top">
+                <div class="icon-wrap">✨</div>
+                <div class="status">
+                    <span class="status-dot"></span>
+                    Live
+                </div>
+            </div>
+            <h2>Activity Recommender</h2>
+            <p>Personalised scout activity suggestions powered by SVD collaborative filtering.</p>
+            <div class="tags">
+                <span class="tag">SVD</span>
+                <span class="tag">Collaborative</span>
+                <span class="tag">Reco</span>
+            </div>
+            <div class="port-strip">API <code>:8006</code></div>
+            <span class="card-arrow">↗</span>
+        </a>
+
+    </div>
+
+    <!-- ── Footer ─────────────────────────────────────── -->
+    <p class="footer">
+        Scout Treasury System &nbsp;·&nbsp; MLOps Platform &nbsp;·&nbsp;
+        Dashboard <code style="font-size:0.7rem; color:var(--accent2);">:5555</code>
+    </p>
+
+</div>
+
+<!-- ── Live status check ────────────────────────────── -->
+<script>
+const SERVICES = [
+    { id: 'card-scout-forecast', port: 8001 },
+    { id: 'card-anomaly',        port: 8004 },
+    { id: 'card-classification', port: 8005 },
+    { id: 'card-recommendation', port: 8006 },
+];
+
+async function checkStatus(svc) {
+    const card = document.getElementById(svc.id);
+    if (!card) return;
+    const dot  = card.querySelector('.status-dot');
+    const lbl  = card.querySelector('.status');
+
+    try {
+        // Use a proxied health endpoint on the dashboard server itself to avoid CORS
+        const res = await fetch(`/health/${svc.port}`, { signal: AbortSignal.timeout(3000) });
+        const up  = res.ok;
+        dot.className  = 'status-dot' + (up ? '' : ' off');
+        lbl.childNodes[lbl.childNodes.length - 1].textContent = up ? ' Live' : ' Offline';
+    } catch (_) {
+        dot.className = 'status-dot off';
+        lbl.childNodes[lbl.childNodes.length - 1].textContent = ' Offline';
+    }
+}
+
+// Run on load, then every 30 s
+SERVICES.forEach(checkStatus);
+setInterval(() => SERVICES.forEach(checkStatus), 30_000);
+
+// ── Training Logic ───────────────────────────────────
+const btnTrain = document.getElementById('btn-train');
+const trainStatusContainer = document.getElementById('train-status');
+const trainModelsList = document.getElementById('train-models-list');
+let trainPollInterval = null;
+
+const prettyNames = {
+    'scout_forecast': 'Scout Forecast',
+    'anomaly': 'Anomaly Detection',
+    'classification': 'Classification',
+    'recommendation': 'Recommendation'
+};
+
+btnTrain.addEventListener('click', async () => {
+    btnTrain.disabled = true;
+    btnTrain.innerHTML = '<span class="status-dot" style="background:#fff"></span> Starting...';
+    try {
+        const res = await fetch('/train', { method: 'POST' });
+        if (!res.ok && res.status !== 409) throw new Error("Server error");
+        trainStatusContainer.style.display = 'block';
+        startPolling();
+    } catch (err) {
+        alert("Failed to start training: " + err);
+        btnTrain.disabled = false;
+        btnTrain.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.92-10.34l5.67-5.67"/></svg> Retrain All Models`;
+    }
+});
+
+function startPolling() {
+    if (trainPollInterval) clearInterval(trainPollInterval);
+    trainPollInterval = setInterval(pollStatus, 1000);
+    pollStatus();
+}
+
+async function pollStatus() {
+    try {
+        const res = await fetch('/train/status');
+        const data = await res.json();
+        
+        let html = '';
+        const models = data.models || {};
+        for (const [id, info] of Object.entries(models)) {
+            let badgeClass = 'status-' + info.status;
+            let displayStatus = info.status === 'running' ? 'RUNNING' : info.status.toUpperCase();
+            let name = prettyNames[id] || id;
+            
+            html += `<div class="train-model-row">
+                <span class="model-name">${name}</span>
+                <span class="model-msg">${info.message}</span>
+                <span class="model-status-badge ${badgeClass}" style="margin-left:1rem">${displayStatus}</span>
+            </div>`;
+        }
+        trainModelsList.innerHTML = html;
+        trainStatusContainer.style.display = 'block';
+        
+        if (data.running) {
+            btnTrain.innerHTML = '<span class="status-dot" style="background:#fff"></span> Training in progress...';
+            btnTrain.disabled = true;
+        } else if (data.started_at) { // Finished
+            clearInterval(trainPollInterval);
+            trainPollInterval = null;
+            btnTrain.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.92-10.34l5.67-5.67"/></svg> Retrain All Models`;
+            btnTrain.disabled = false;
+        }
+    } catch (e) {
+        console.error("Poll error", e);
+    }
+}
+
+// Check on load if training is already running
+pollStatus();
+</script>
+
+</body>
+</html>

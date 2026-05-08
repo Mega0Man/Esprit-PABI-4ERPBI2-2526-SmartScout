@@ -1,0 +1,37 @@
+# Byte-compiled
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# MLflow
+mlruns/
+mlartifacts/
+mlflow.db
+
+# Models
+models/*.pkl
+models/*.joblib
+
+# Logs
+*.log
+
+# Data
+*.csv
+*.sqlite
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.dockerignore

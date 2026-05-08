@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #0f2f23 0%, #1a4031 100%);
+  min-height: 100vh;
+  color: #fff;
+}
+
+:root {
+  --green-dark: #0f2f23;
+  --green-medium: #1a4031;
+  --gold: #d4af37;
+  --gold-light: #f0d78c;
+  --blue: #2c7fb8;
+  --blue-light: #5aa0e6;
+  --green-role: #2d8c59;
+  --green-role-light: #5cb885;
+}

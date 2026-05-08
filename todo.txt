@@ -1,0 +1,3 @@
+login thing , login with username and password , or login with face
+
+for the register , he has to put his username and password or with face direcly

@@ -1,0 +1,36 @@
+<div class="face-recognition-container">
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading face recognition models...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="camera-section">
+    <div class="video-wrapper">
+      <video #video autoplay muted playsinline></video>
+      <canvas #canvas></canvas>
+      <div class="face-guide" [class.detected]="faceDetectedState">
+        <div class="guide-corner top-left"></div>
+        <div class="guide-corner top-right"></div>
+        <div class="guide-corner bottom-left"></div>
+        <div class="guide-corner bottom-right"></div>
+        <div class="guide-message">{{ guideMessage }}</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div *ngIf="mode === 'register'" class="register-section">
+        <button 
+          class="register-btn" 
+          (click)="registerFace()"
+          [disabled]="!username || !faceDetectedState"
+        >
+          📸 {{ faceDetectedState ? 'Register Face' : 'Position Face to Register' }}
+        </button>
+      </div>
+
+      <div *ngIf="mode === 'login'" class="login-section">
+        <!-- Message removed to avoid overlap with guide message -->
+      </div>
+    </div>
+  </div>
+</div>

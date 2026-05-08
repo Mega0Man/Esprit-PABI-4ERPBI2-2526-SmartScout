@@ -1,0 +1,21 @@
+# requirements.txt
+flask
+pandas
+numpy
+statsmodels
+scikit-learn
+sqlalchemy
+psycopg2-binary
+python-dotenv
+
+# MLOps
+mlflow
+fastapi
+uvicorn[standard]
+pydantic
+requests
+joblib
+
+# Testing
+pytest
+httpx

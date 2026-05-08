@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  api:
+    build: .
+    ports:
+      - "8006:8006"
+    environment:
+      - DB_URL=postgresql+psycopg2://postgres:12345678@host.docker.internal:5432/New_DWw
+      - MLFLOW_TRACKING_URI=http://host.docker.internal:5000
+    volumes:
+      - .:/app

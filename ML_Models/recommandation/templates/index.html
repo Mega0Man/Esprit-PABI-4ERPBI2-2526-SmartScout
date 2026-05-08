@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Scout Treasury AI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg: #0b1d13;
+    --card: #12281b;
+    --border: rgba(255,255,255,0.08);
+    --accent: #22c55e;
+    --danger: #ef4444;
+    --warn: #f59e0b;
+    --text: #ecfdf5;
+    --muted: #94a3b8;
+    --input-bg: #1b3a2b;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:2rem;
+}
+
+body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background-image:
+        linear-gradient(rgba(34,197,94,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34,197,94,0.05) 1px, transparent 1px);
+    background-size:40px 40px;
+    pointer-events:none;
+}
+
+.wrapper { width:100%; max-width:520px; }
+
+.header { text-align:center; margin-bottom:2rem; }
+
+.badge {
+    display:inline-block;
+    background: rgba(34,197,94,0.15);
+    color: var(--accent);
+    border:1px solid rgba(34,197,94,0.3);
+    border-radius:50px;
+    font-size:0.7rem;
+    padding:0.3rem 0.9rem;
+    margin-bottom:1rem;
+}
+
+h1 {
+    font-family:'Syne',sans-serif;
+    font-size:2rem;
+    font-weight:800;
+}
+
+h1 span { color: var(--accent); }
+
+.subtitle {
+    color: var(--muted);
+    font-size:0.9rem;
+}
+
+.card {
+    background: var(--card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:2rem;
+}
+
+label {
+    font-size:0.75rem;
+    color: var(--muted);
+    text-transform:uppercase;
+}
+
+.input-wrap { position:relative; margin-top:5px; }
+
+input {
+    width:100%;
+    background: var(--input-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color: var(--text);
+    padding:0.75rem 0.9rem;
+    font-size:1rem;
+}
+
+input:focus {
+    border-color: var(--accent);
+    outline:none;
+    box-shadow:0 0 0 3px rgba(34,197,94,0.2);
+}
+
+button {
+    width:100%;
+    margin-top:1.2rem;
+    padding:0.9rem;
+    background: var(--accent);
+    color:#022c22;
+    font-weight:700;
+    border-radius:12px;
+    cursor:pointer;
+    border:none;
+}
+
+button:hover { opacity:0.9; }
+
+.result {
+    margin-top:1.5rem;
+    padding:1.4rem;
+    border-radius:14px;
+    text-align:center;
+}
+
+.result.normal {
+    background: rgba(34,197,94,0.15);
+    border:1px solid rgba(34,197,94,0.3);
+}
+
+.result.error {
+    background: rgba(148,163,184,0.15);
+    border:1px solid rgba(148,163,184,0.3);
+}
+
+.value {
+    margin-top:10px;
+    font-size:1rem;
+    color: var(--muted);
+}
+
+ul.recommendations {
+    list-style:none;
+    margin-top:1rem;
+    padding:0;
+    text-align:left;
+}
+
+ul.recommendations li {
+    background: rgba(34,197,94,0.08);
+    border:1px solid rgba(34,197,94,0.2);
+    border-radius:8px;
+    padding:0.6rem;
+    margin-bottom:0.5rem;
+    font-size:0.9rem;
+    color: var(--text);
+}
+.footer {
+    text-align:center;
+    margin-top:1.5rem;
+    font-size:0.75rem;
+    color: var(--muted);
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<div class="header">
+    <div class="badge">🌲 Scout Treasury AI</div>
+    <h1>Scout <span>Recommendation</span> System</h1>
+    <p class="subtitle">Top-N activity suggestions for scouts</p>
+</div>
+
+<div class="card">
+
+<form method="POST">
+    <label>User ID</label>
+    <div class="input-wrap">
+        <input type="number" step="1" name="amount" placeholder="e.g. 1" required>
+    </div>
+    <button type="submit">🎯 Get Recommendations</button>
+</form>
+
+{% if result %}
+<div class="result normal">
+    <h3>{{ result }}</h3>
+    {% if value is not none %}
+    <div class="value">👤 User ID: {{ value }}</div>
+    {% endif %}
+
+    {% if recs %}
+    <ul class="recommendations">
+        {% for r in recs %}
+        <li>{{ r }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endif %}
+
+</div>
+
+<p class="footer">Model: SVD Recommendation · Scout Treasury System</p>
+
+</div>
+
+</body>
+</html>

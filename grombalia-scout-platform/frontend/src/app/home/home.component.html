@@ -1,0 +1,82 @@
+<div class="home-container">
+  <!-- HEADER -->
+  <header class="home-header">
+    <div class="home-logo">⚜️</div>
+    <div>
+      <span class="home-org-name">Grombalia Scout Group</span>
+      <span class="home-org-motto">UNITY &bull; SERVICE &bull; BROTHERHOOD</span>
+    </div>
+  </header>
+
+  <!-- MAIN AREA -->
+  <div class="home-body">
+    <!-- LEFT TEXT -->
+    <div class="home-left">
+      <h1 class="home-welcome-title">WELCOME!</h1>
+      <span class="home-fleur">⚜</span>
+      <p class="home-choose-title">CHOOSE YOUR DASHBOARD</p>
+      <p class="home-choose-sub">Select your role to access<br>your dashboard</p>
+      <div class="home-quote">
+        <p>To serve, to help,<br>to build a better world.</p>
+      </div>
+    </div>
+
+    <svg class="home-connector-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <!-- Green line: Unit Leader → middle finger -->
+      <line x1="50" y1="28" x2="52" y2="53"
+            stroke="rgba(111,219,155,0.85)" stroke-width="0.5"
+            stroke-dasharray="1.5 0.8"/>
+      <circle cx="52" cy="53" r="1.2"
+              fill="rgba(111,219,155,0.9)" stroke="#fff" stroke-width="0.3"/>
+
+      <!-- Gold line: Treasurer → middle finger -->
+      <line x1="56" y1="28" x2="56" y2="52"
+            stroke="rgba(245,224,154,0.85)" stroke-width="0.5"
+            stroke-dasharray="1.5 0.8"/>
+      <circle cx="56" cy="52" r="1.2"
+              fill="rgba(245,224,154,0.9)" stroke="#fff" stroke-width="0.3"/>
+
+      <!-- Blue line: Group Leader → right fingertip -->
+      <line x1="61" y1="35" x2="60" y2="52"
+            stroke="rgba(106,184,247,0.85)" stroke-width="0.5"
+            stroke-dasharray="1.5 0.8"/>
+      <circle cx="60" cy="52" r="1.2"
+              fill="rgba(106,184,247,0.9)" stroke="#fff" stroke-width="0.3"/>
+    </svg>
+
+    <!-- GREEN: left finger -->
+    <div class="role-button green" (click)="goToLogin('unit_leader')">
+      <div class="role-button-label">
+        <span class="lbl-name">UNIT LEADER</span>
+        <span class="lbl-sub">Dashboard</span>
+      </div>
+      <span class="role-icon">👤</span>
+    </div>
+
+    <!-- GOLD: middle finger -->
+    <div class="role-button gold" (click)="goToLogin('treasurer')">
+      <div class="role-button-label">
+        <span class="lbl-name">TREASURER</span>
+        <span class="lbl-sub">Dashboard</span>
+      </div>
+      <span class="role-icon">💰</span>
+    </div>
+
+    <!-- BLUE: right finger -->
+    <div class="role-button blue" (click)="goToLogin('group_leader')">
+      <div class="role-button-label">
+        <span class="lbl-name">GROUP LEADER</span>
+        <span class="lbl-sub">Dashboard</span>
+      </div>
+      <span class="role-icon">👥</span>
+    </div>
+  </div>
+
+  <!-- BOTTOM VALUES BAR -->
+  <footer class="home-values-bar">
+    <div class="value-item"><span class="value-icon">⛺</span><span class="value-label">Adventure</span></div>
+    <div class="value-item"><span class="value-icon">🤝</span><span class="value-label">Teamwork</span></div>
+    <div class="value-item"><span class="value-icon">🔥</span><span class="value-label">Values</span></div>
+    <div class="value-item"><span class="value-icon">🧭</span><span class="value-label">Leadership</span></div>
+  </footer>
+</div>

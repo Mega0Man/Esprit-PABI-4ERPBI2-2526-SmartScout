@@ -1,0 +1,50 @@
+id_activity,activity_name_ar,activity_name_en,activity_type,category,place,season,start_date,duration_days,is_camp,is_project,is_recurring,sponsor_name
+1,اجتماعات أسبوعية,Weekly meetings,اجتماع,أنشطة دورية,قرنبالية,,,1,f,f,t,
+2,خرجات تربوية,Educational trips,خرجة,أنشطة تربوية,تونس,,,1,f,f,t,
+3,أنشطة بيئية واجتماعية,Environmental activities,نشاط مجتمعي,أنشطة مجتمعية,قرنبالية,,,1,f,f,t,
+4,مشاركات في تظاهرات,Event participations,مشاركة,أنشطة جهوية,جهة نابل,,,1,f,f,t,
+5,خرجة الربيع الكبرى,Spring Grand Outing,خرجة,أنشطة تربوية,تونس,2023/2024,Wed Mar 15 00:00:00 CET 2023,1,f,f,f,
+6,خرجة كنز المدينة,City Treasure Outing,خرجة,أنشطة تربوية,المدينة العربية، تونس,2023/2024,Mon Mar 20 00:00:00 CET 2023,1,f,f,f,
+7,خرجة كنز المدينة,City Treasure Outing,خرجة,أنشطة تربوية,جامع الزيتونة,2024/2025,Mon Mar 18 00:00:00 CET 2024,1,f,f,f,
+8,خرجة The Walking Scout,The Walking Scout,خرجة,أنشطة تربوية,برج السدرية,2023/2024,Fri May 10 00:00:00 CET 2024,1,f,f,f,
+9,خرجة Legend of the Wild,Legend of the Wild,خرجة,أنشطة تربوية,برج السدرية,2024/2025,Wed Mar 05 00:00:00 CET 2025,1,f,f,f,
+10,المخيم الربيعي 2022,Spring Camp 2022,مخيم,مخيمات,قرنبالية,2021/2022,Thu Mar 10 00:00:00 CET 2022,5,t,f,f,
+11,المخيم الصيفي 2022,Summer Camp 2022,مخيم,مخيمات,سوسة,2021/2022,Fri Jul 15 00:00:00 CET 2022,10,t,f,f,
+12,المخيم الربيعي 2023,Spring Camp 2023,مخيم,مخيمات,قرنبالية,2022/2023,Sun Mar 12 00:00:00 CET 2023,5,t,f,f,
+13,المخيم الصيفي 2023,Summer Camp 2023,مخيم,مخيمات,الحمامات,2022/2023,Thu Jul 20 00:00:00 CET 2023,10,t,f,f,
+14,المخيم الربيعي 2024,Spring Camp 2024,مخيم,مخيمات,تونس,2023/2024,Fri Mar 15 00:00:00 CET 2024,5,t,f,f,
+15,المخيم الصيفي 2024,Summer Camp 2024,مخيم,مخيمات,تونس,2023/2024,Sat Jul 20 00:00:00 CET 2024,10,t,f,f,
+16,المخيم الربيعي 2025,Spring Camp 2025,مخيم,مخيمات,تونس,2024/2025,Thu Mar 20 00:00:00 CET 2025,6,t,f,f,
+17,المخيم الصيفي أشبال وزهرات 2025,Summer Camp Cubs Flowers 2025,مخيم,مخيمات,تونس,2024/2025,Thu Jul 10 00:00:00 CET 2025,7,t,f,f,
+18,المخيم الصيفي كشافة ومرشدات 2025,Summer Camp Scouts Guides 2025,مخيم,مخيمات,سوسة,2024/2025,Tue Aug 19 00:00:00 CET 2025,7,t,f,f,
+19,المخيم المتنقل جوالة ودليلات 2025,Mobile Camp Rovers Rangers 2025,مخيم,مخيمات,قرنبالية,2024/2025,Sun Jun 01 00:00:00 CET 2025,3,t,f,f,
+20,المخيم الصيفي للدليلات 2025,Dalilat Summer Camp 2025,مخيم,مخيمات,سوسة,2024/2025,Tue Aug 19 00:00:00 CET 2025,7,t,f,f,
+21,المخيم التحضيري 2026,Preparatory Camp 2026,مخيم,مخيمات,تونس,2025/2026,Fri Sep 05 00:00:00 CET 2025,2,t,f,f,
+22,مخيم الشتاء 2024,Winter Camp 2024,مخيم,مخيمات,عين دراهم,2023/2024,Wed Dec 20 00:00:00 CET 2023,4,t,f,f,
+23,مخيم الشتاء 2025,Winter Camp 2025,مخيم,مخيمات,بنزرت,2024/2025,Wed Dec 18 00:00:00 CET 2024,4,t,f,f,
+24,مخيم الانطلاق 2024,Launch Camp 2024,مخيم,مخيمات,قرنبالية,2024/2025,Thu Sep 12 00:00:00 CET 2024,3,t,f,f,
+25,مخيم الانطلاق 2025,Launch Camp 2025,مخيم,مخيمات,قرنبالية,2025/2026,Wed Sep 10 00:00:00 CET 2025,3,t,f,f,
+26,ملتقى قادة الأشبال,Cubs Leaders Meeting,مشاركة,أنشطة جهوية,فوج بني خيار,2025/2026,Sat Nov 08 00:00:00 CET 2025,2,f,f,f,
+27,ندوة القائدات,Leaders Seminar,مشاركة,أنشطة جهوية,جهة نابل,2023/2024,Wed May 01 00:00:00 CET 2024,1,f,f,f,
+28,المجلس الجهوي,Regional Council,مشاركة,أنشطة جهوية,نزل YADIS الحمامات,2025/2026,Thu Sep 25 00:00:00 CET 2025,1,f,f,f,
+29,ملتقى الاستكشاف SONIC-R,SONIC-R Adventure Meeting,مشاركة,أنشطة جهوية,قرنبالية,2024/2025,Mon Jun 30 00:00:00 CET 2025,2,f,f,f,
+30,شارة لاند ببرج السدرية,Badge Land,مشاركة,تدريب,برج السدرية,2024/2025,Fri Jun 13 00:00:00 CET 2025,3,f,f,f,
+31,المجلس الجهوي الأول لجهة نابل,First Nabeul Regional Council,مشاركة,أنشطة جهوية,الحمامات,2024/2025,Sun Jun 01 00:00:00 CET 2025,1,f,f,f,
+32,الدورات التدريبية أمن المخيمات S3,S3 Camp Safety Training,مشاركة,تدريب,المركب الشبابي نابل,2024/2025,Sat Apr 26 00:00:00 CET 2025,2,f,f,f,
+33,الملتقى الجهوي للقادة,Regional Leaders Meeting,مشاركة,أنشطة جهوية,الصمعة,2024/2025,Sat Feb 15 00:00:00 CET 2025,2,f,f,f,
+34,ملتقى القادة الجهوي 2022,Regional Leaders Meeting 2022,مشاركة,أنشطة جهوية,قرنبالية,2022/2023,Sat Oct 15 00:00:00 CET 2022,1,f,f,f,
+35,ندوة التكوين 2023,Training Seminar 2023,مشاركة,تدريب,نابل,2023/2024,Sun Nov 05 00:00:00 CET 2023,1,f,f,f,
+36,L'atelier Rose,L'atelier Rose,مشروع,تعليم وصحة,تونس,2023/2024,Thu Jun 01 00:00:00 CET 2023,90,f,t,f,EU4Youth
+37,Atelier bleu Sfax V1.0,Atelier bleu Sfax V1.0,مشروع,بيئة واقتصاد,صفاقس,2023/2024,Thu Jun 01 00:00:00 CET 2023,60,f,t,f,Fondation de France
+38,Atelier bleu Kerkennah V2.0,Atelier bleu Kerkennah V2.0,مشروع,بيئة واجتماع,قرقنة,2023/2024,Thu Jun 01 00:00:00 CET 2023,60,f,t,f,Fondation de France
+39,Projet National Solidarité Covid-19,National Solidarity Covid-19,مشروع,صحة وتضامن,تونس,2021/2022,Wed Sep 01 00:00:00 CET 2021,365,f,t,f,Gouvernorat de Sfax
+40,Projet Madrasti,Projet Madrasti,مشروع,تعليم وبيئة,تونس,2022/2023,Thu Sep 01 00:00:00 CET 2022,180,f,t,f,Ministère de l'éducation
+41,رمضان الخير - الدورة السابعة,Ramadan Goodness 7th Edition,مشروع تضامني,أنشطة رمضان,قرنبالية,2021/2022,Sat Apr 02 00:00:00 CET 2022,30,f,t,f,
+42,رمضان الخير - الدورة الثامنة,Ramadan Goodness 8th Edition,مشروع تضامني,أنشطة رمضان,قرنبالية,2022/2023,Thu Mar 23 00:00:00 CET 2023,30,f,t,f,
+43,رمضان الخير - الدورة التاسعة,Ramadan Goodness 9th Edition,مشروع تضامني,أنشطة رمضان,قرنبالية,2024/2025,Sat Feb 01 00:00:00 CET 2025,30,f,t,f,نورس بعزيز
+44,افطار صائم على الطريق,Iftar on the road,نشاط تضامني,أنشطة رمضان,قرنبالية,2024/2025,Wed Feb 05 00:00:00 CET 2025,1,f,f,t,
+45,قفة رمضان,Ramadan basket,نشاط تضامني,أنشطة رمضان,قرنبالية,2024/2025,Mon Feb 10 00:00:00 CET 2025,1,f,f,t,شركات المواد الغذائية
+46,لبسة العيد,Eid clothes,نشاط تضامني,أنشطة رمضان,قرنبالية,2024/2025,Sat Mar 15 00:00:00 CET 2025,1,f,f,t,محلات الملابس
+47,موائد افطار,Iftar tables,نشاط تضامني,أنشطة رمضان,قرنبالية,2024/2025,Sat Feb 15 00:00:00 CET 2025,1,f,f,t,
+48,سهرة رمضانية,Ramadan evening,نشاط ثقافي,أنشطة رمضان,قرنبالية,2024/2025,Sat Mar 01 00:00:00 CET 2025,1,f,f,t,
+49,أنشطة عامة,General activities,نشاط عام,أنشطة دورية,قرنبالية,,,1,f,f,t,

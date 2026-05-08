@@ -1,0 +1,76 @@
+<div class="login-container" [ngStyle]="{'background': 'linear-gradient(135deg, ' + roleConfig?.gradientFrom + ' 0%, ' + roleConfig?.gradientTo + ' 100%)'}">
+  <button class="back-button" (click)="goHome()">← Back to Home</button>
+  <div class="login-box">
+    <div class="login-icon">{{ roleConfig?.icon }}</div>
+    <h1>{{ roleConfig?.name }}</h1>
+    <p class="subtitle-login">Sign in to access the dashboard</p>
+
+    <div class="tabs">
+      <button class="tab-btn" [class.active]="activeTab === 'password'" (click)="activeTab = 'password'">
+        🔐 Password
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'face'" (click)="activeTab = 'face'">
+        👤 Face ID
+      </button>
+    </div>
+
+    <div *ngIf="activeTab === 'password'">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" formControlName="username" placeholder="Enter your username" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" formControlName="password" placeholder="Enter your password" required>
+        </div>
+        <div *ngIf="error" class="error-message">{{ error }}</div>
+        <button type="submit" [disabled]="loading" [style.background]="roleConfig?.color">
+          {{ loading ? 'Signing in...' : 'Sign In' }}
+        </button>
+      </form>
+      <div class="demo-credentials">
+        <p>Demo credentials (username / password)</p>
+        <code>{{ role }} / password</code>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab === 'face'">
+      <div *ngIf="registrationSuccess" class="success-message" style="margin-bottom:16px; background: rgba(45,140,89,0.2); border:1px solid rgba(45,140,89,0.5); color:#5cb885; padding:12px 16px; border-radius:10px; font-size:14px; text-align:center;">
+        ✅ Face registered successfully!
+      </div>
+      
+      <div class="face-tabs">
+        <button class="face-tab-btn" [class.active]="faceMode === 'login'" (click)="faceMode = 'login'">
+          Login
+        </button>
+        <button class="face-tab-btn" [class.active]="faceMode === 'register'" (click)="faceMode = 'register'">
+          Register New Face
+        </button>
+      </div>
+
+      <div *ngIf="faceMode === 'register'" class="form-group" style="margin-top:16px;">
+        <label>Username</label>
+        <input type="text" [(ngModel)]="registerUsername" placeholder="Enter your username" required>
+      </div>
+
+      <div class="face-recognition-wrapper" style="position: relative;">
+        <app-face-recognition 
+          [mode]="faceMode"
+          [username]="registerUsername"
+          (faceRecognized)="onFaceRecognized($event)"
+          (faceRegistered)="onFaceRegistered($event)"
+          (error)="onFaceError($event)"
+        ></app-face-recognition>
+
+        <!-- Loading overlay -->
+        <div *ngIf="loading" class="face-loading-overlay">
+          <div class="spinner"></div>
+          <p>Logging you in...</p>
+        </div>
+      </div>
+      
+      <div *ngIf="faceErrorMessage" class="error-message" style="margin-top:16px;">{{ faceErrorMessage }}</div>
+    </div>
+  </div>
+</div>
