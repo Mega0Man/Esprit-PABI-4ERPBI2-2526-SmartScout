@@ -22,7 +22,7 @@
         <button 
           class="register-btn" 
           (click)="registerFace()"
-          [disabled]="!username || !faceDetectedState"
+          [disabled]="!username || !faceDetectedState || disabled"
         >
           📸 {{ faceDetectedState ? 'Register Face' : 'Position Face to Register' }}
         </button>

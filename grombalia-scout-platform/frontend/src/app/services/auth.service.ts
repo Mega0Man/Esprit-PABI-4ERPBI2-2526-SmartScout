@@ -51,8 +51,18 @@ export class AuthService {
     );
   }
 
-  signup(username: string, role: string): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/signup?username=${username}&role=${role}`, {});
+  signup(signupData: { 
+    username: string; 
+    password: string; 
+    role: string; 
+    national_id: string; 
+    face_descriptor?: number[] 
+  }): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/signup`, signupData);
+  }
+
+  getFaceDescriptors(): Observable<Record<string, number[]>> {
+    return this.http.get<Record<string, number[]>>(`${this.apiUrl}/face-descriptors`);
   }
 
   private setSession(response: AuthResponse): void {

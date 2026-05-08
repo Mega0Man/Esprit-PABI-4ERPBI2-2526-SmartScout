@@ -12,6 +12,7 @@ export class FaceRecognitionComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() mode: 'register' | 'login' = 'login';
   @Input() username?: string;
+  @Input() disabled: boolean = false;
   @Output() faceDetected = new EventEmitter<any>();
   @Output() faceRecognized = new EventEmitter<string>();
   @Output() faceRegistered = new EventEmitter<boolean>();

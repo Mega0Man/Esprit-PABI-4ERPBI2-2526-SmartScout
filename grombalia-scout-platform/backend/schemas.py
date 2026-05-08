@@ -6,10 +6,12 @@ from datetime import datetime
 class UserBase(BaseModel):
     username: str
     role: str
+    national_id: Optional[str] = None
 
 
 class UserCreate(UserBase):
     password: str
+    face_descriptor: Optional[list[float]] = None
 
 
 class User(UserBase):
@@ -17,7 +19,7 @@ class User(UserBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Token(BaseModel):

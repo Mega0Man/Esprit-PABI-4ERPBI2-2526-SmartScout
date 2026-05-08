@@ -49,15 +49,31 @@
         </button>
       </div>
 
-      <div *ngIf="faceMode === 'register'" class="form-group" style="margin-top:16px;">
-        <label>Username</label>
-        <input type="text" [(ngModel)]="registerUsername" placeholder="Enter your username" required>
+      <div *ngIf="faceMode === 'register'" class="registration-form" style="margin-top:16px;">
+        <div class="form-group">
+          <label>National ID (8 digits)</label>
+          <input type="text" [(ngModel)]="registerId" placeholder="Enter your 8-digit ID" maxlength="8">
+        </div>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" [(ngModel)]="registerUsername" placeholder="Enter your username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" [(ngModel)]="registerPassword" placeholder="Create a password">
+        </div>
+        
+        <div *ngIf="!faceCaptured" class="capture-hint" style="color: #f0d78c; font-size: 13px; margin-bottom: 12px; text-align: center;">
+          📸 Capture your face to complete registration
+        </div>
       </div>
 
       <div class="face-recognition-wrapper" style="position: relative;">
         <app-face-recognition 
           [mode]="faceMode"
           [username]="registerUsername"
+          [disabled]="registerId.length !== 8 || !registerUsername || !registerPassword"
+          (faceDetected)="onFaceDetected($event)"
           (faceRecognized)="onFaceRecognized($event)"
           (faceRegistered)="onFaceRegistered($event)"
           (error)="onFaceError($event)"

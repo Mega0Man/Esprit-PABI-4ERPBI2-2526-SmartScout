@@ -15,6 +15,7 @@ from models import User, MLInferenceLog
 from schemas import (
     Token,
     User as UserSchema,
+    UserCreate,
     ForecastingInput,
     ClassificationInput,
     AnomalyInput,
@@ -32,6 +33,14 @@ load_dotenv()
 
 app = FastAPI(title="Grombalia Scout Group API")
 
+# Predefined list of valid IDs (Some are assigned to sample users in init_db.py)
+VALID_IDS = [
+    "12345678", "87654321", "11223344", "55667788", # Original list
+    "99887766", "11112222", "33334444", "55556666", # Additional test IDs
+    "12121212", "34343434", "56565656", "78787878",
+    "00000000", "99999999"
+]
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
@@ -41,49 +50,51 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Prometheus metrics
-REQUEST_COUNT = Counter(
-    "api_requests_total",
-    "Total number of API requests",
-    ["method", "endpoint", "role"],
-)
-INFERENCE_TIME = Histogram(
-    "api_inference_duration_seconds",
-    "Time spent processing ML inference",
-    ["model", "role"],
-)
-INFERENCE_COUNT = Counter(
-    "api_inference_total",
-    "Total number of ML inferences",
-    ["model", "role"],
-)
-
-
 @app.get("/metrics")
 async def metrics():
-    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+    return {"status": "metrics disabled"}
 
 
 @app.get("/metrics/{role}")
 async def role_metrics(role: str):
-    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+    return {"status": "metrics disabled"}
 
 
 @app.post("/signup", response_model=UserSchema)
 async def signup(
-    username: str, role: str, db: Session = Depends(get_db)
+    user_data: UserCreate, db: Session = Depends(get_db)
 ):
-    existing_user = db.query(User).filter(User.username == username).first()
+    # Check if ID is in the valid list
+    if user_data.national_id not in VALID_IDS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid National ID. Please provide a verified 8-digit ID."
+        )
+
+    # Check if ID is already used
+    existing_id = db.query(User).filter(User.national_id == user_data.national_id).first()
+    if existing_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="National ID already registered."
+        )
+
+    # Check if username is unique
+    existing_user = db.query(User).filter(User.username == user_data.username).first()
     if existing_user:
-        # If user exists, we just return it (or we could update role if needed)
-        return existing_user
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already taken."
+        )
     
-    # Create new user with default password 'password'
+    # Create new user
     from auth import get_password_hash
     new_user = User(
-        username=username,
-        role=role,
-        password_hash=get_password_hash("password")
+        username=user_data.username,
+        role=user_data.role,
+        national_id=user_data.national_id,
+        password_hash=get_password_hash(user_data.password),
+        face_descriptor=user_data.face_descriptor
     )
     db.add(new_user)
     db.commit()
@@ -116,6 +127,12 @@ async def login_by_face(
             detail="User not found",
         )
     return create_user_token(user)
+
+
+@app.get("/face-descriptors")
+async def get_face_descriptors(db: Session = Depends(get_db)):
+    users = db.query(User).filter(User.face_descriptor != None).all()
+    return {user.username: user.face_descriptor for user in users}
 
 
 def create_user_token(user: User):
@@ -158,19 +175,15 @@ async def forecasting(
 
     start_time = time.time()
 
-    REQUEST_COUNT.labels("POST", "/ml/forecasting", current_user.role).inc()
-    INFERENCE_COUNT.labels("forecasting", current_user.role).inc()
-
-    with INFERENCE_TIME.labels("forecasting", current_user.role).time():
-        # Simulate prediction - in real setup, load from MLflow
-        prediction = []
-        for i in range(input.months):
-            prediction.append(
-                {
-                    "month": f"2025-{i+1:02d}",
-                    "predicted_scouts": random.randint(80, 120),
-                }
-            )
+    # Simulate prediction - in real setup, load from MLflow
+    prediction = []
+    for i in range(input.months):
+        prediction.append(
+            {
+                "month": f"2025-{i+1:02d}",
+                "predicted_scouts": random.randint(80, 120),
+            }
+        )
 
     inference_time = (time.time() - start_time) * 1000
 
@@ -205,14 +218,10 @@ async def classification(
 
     start_time = time.time()
 
-    REQUEST_COUNT.labels("POST", "/ml/classification", current_user.role).inc()
-    INFERENCE_COUNT.labels("classification", current_user.role).inc()
-
-    with INFERENCE_TIME.labels("classification", current_user.role).time():
-        # Simulate prediction
-        classes = ["active", "inactive", "at_risk"]
-        prediction = random.choice(classes)
-        confidence = random.uniform(0.7, 0.98)
+    # Simulate prediction
+    classes = ["active", "inactive", "at_risk"]
+    prediction = random.choice(classes)
+    confidence = random.uniform(0.7, 0.98)
 
     inference_time = (time.time() - start_time) * 1000
 
@@ -248,13 +257,9 @@ async def anomaly_detection(
 
     start_time = time.time()
 
-    REQUEST_COUNT.labels("POST", "/ml/anomaly", current_user.role).inc()
-    INFERENCE_COUNT.labels("anomaly", current_user.role).inc()
-
-    with INFERENCE_TIME.labels("anomaly", current_user.role).time():
-        # Simulate prediction
-        is_anomaly = random.random() > 0.9
-        score = random.uniform(0, 1)
+    # Simulate prediction
+    is_anomaly = random.random() > 0.9
+    score = random.uniform(0, 1)
 
     inference_time = (time.time() - start_time) * 1000
 
@@ -289,20 +294,9 @@ async def recommendation(
 
     start_time = time.time()
 
-    REQUEST_COUNT.labels("POST", "/ml/recommendation", current_user.role).inc()
-    INFERENCE_COUNT.labels("recommendation", current_user.role).inc()
-
-    with INFERENCE_TIME.labels("recommendation", current_user.role).time():
-        # Simulate prediction
-        activities = [
-            "Camping",
-            "Hiking",
-            "First Aid Training",
-            "Community Service",
-            "Nature Exploration",
-            "Team Building",
-        ]
-        recommended_activities = random.sample(activities, k=3)
+    # Simulate prediction
+    activities = ["hiking", "camping", "first_aid", "navigation", "cooking"]
+    recommended_activities = random.sample(activities, k=3)
 
     inference_time = (time.time() - start_time) * 1000
 
@@ -328,4 +322,4 @@ async def recommendation(
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8090)
+    uvicorn.run("main:app", host="0.0.0.0", port=8090, reload=True)

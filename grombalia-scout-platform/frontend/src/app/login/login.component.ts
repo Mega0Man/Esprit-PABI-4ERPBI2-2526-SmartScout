@@ -21,6 +21,10 @@ export class LoginComponent implements OnInit {
   activeTab: 'password' | 'face' = 'password';
   faceMode: 'login' | 'register' = 'login';
   registerUsername: string = '';
+  registerPassword: string = '';
+  registerId: string = '';
+  faceCaptured: boolean = false;
+  currentDescriptor: number[] | null = null;
   faceErrorMessage: string = '';
   registrationSuccess: boolean = false;
 
@@ -121,24 +125,60 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  onFaceDetected(detection: any): void {
+    if (detection && detection.descriptor) {
+      this.currentDescriptor = Array.from(detection.descriptor);
+    }
+  }
+
   onFaceRegistered(success: boolean): void {
-    if (success) {
-      // Create the user in the backend too
-      this.authService.signup(this.registerUsername, this.role).subscribe({
+    if (success && this.currentDescriptor) {
+      // Validate inputs before signup
+      if (this.registerId.length !== 8) {
+        this.faceErrorMessage = 'National ID must be exactly 8 digits.';
+        return;
+      }
+      if (!this.registerUsername || !this.registerPassword) {
+        this.faceErrorMessage = 'Username and password are required.';
+        return;
+      }
+
+      this.loading = true;
+      this.faceErrorMessage = '';
+
+      const signupData = {
+        username: this.registerUsername,
+        password: this.registerPassword,
+        role: this.role,
+        national_id: this.registerId,
+        face_descriptor: this.currentDescriptor
+      };
+
+      this.authService.signup(signupData).subscribe({
         next: () => {
+          this.loading = false;
           this.registrationSuccess = true;
           this.faceMode = 'login';
-          this.registerUsername = '';
+          this.resetRegisterForm();
           setTimeout(() => {
             this.registrationSuccess = false;
           }, 3000);
         },
         error: (err) => {
-          this.faceErrorMessage = 'Face descriptor saved, but failed to create user in database.';
+          this.loading = false;
+          this.faceErrorMessage = err.error?.detail || 'Registration failed. Check if username/ID is already taken or invalid.';
           console.error('Signup error:', err);
         }
       });
     }
+  }
+
+  private resetRegisterForm(): void {
+    this.registerUsername = '';
+    this.registerPassword = '';
+    this.registerId = '';
+    this.currentDescriptor = null;
+    this.faceCaptured = false;
   }
 
   onFaceError(error: string): void {

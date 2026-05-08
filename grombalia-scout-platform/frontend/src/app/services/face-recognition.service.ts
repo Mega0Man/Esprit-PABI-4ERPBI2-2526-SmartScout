@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as faceapi from 'face-api.js';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +10,9 @@ export class FaceRecognitionService {
   private modelsLoaded = false;
   private readonly MODEL_URL = '/assets/models';
   private readonly STORAGE_KEY = 'registered_faces';
+  private readonly API_URL = 'http://localhost:8090';
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   async loadModels(): Promise<void> {
     if (this.modelsLoaded) {
@@ -57,6 +60,8 @@ export class FaceRecognitionService {
       return false;
     }
 
+    // Still save to localStorage for immediate local use if needed, 
+    // but the main storage is now the backend database via LoginComponent
     const registeredFaces = this.getRegisteredFaces();
     registeredFaces[username] = Array.from(detection.descriptor);
     this.saveRegisteredFaces(registeredFaces);
@@ -71,11 +76,19 @@ export class FaceRecognitionService {
       return null;
     }
 
-    const registeredFaces = this.getRegisteredFaces();
+    // Try to get descriptors from backend
+    let registeredFaces: Record<string, number[]> = {};
+    try {
+      registeredFaces = await firstValueFrom(this.http.get<Record<string, number[]>>(`${this.API_URL}/face-descriptors`));
+    } catch (err) {
+      console.error('Failed to fetch face descriptors from backend, falling back to local storage', err);
+      registeredFaces = this.getRegisteredFaces();
+    }
+
     const labels = Object.keys(registeredFaces);
     
     if (labels.length === 0) {
-      console.log('No registered faces in localStorage');
+      console.log('No registered faces found in database or localStorage');
       return null;
     }
 

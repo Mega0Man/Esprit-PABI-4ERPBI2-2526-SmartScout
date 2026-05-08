@@ -225,6 +225,38 @@
   margin-bottom: 16px;
 }
 
+.registration-form {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.registration-form .form-group {
+  margin-bottom: 12px;
+}
+
+.registration-form .form-group label {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.registration-form .form-group input {
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.capture-hint {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

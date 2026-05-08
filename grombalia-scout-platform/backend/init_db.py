@@ -22,17 +22,20 @@ def init_db():
         {
             "username": "group_leader",
             "password": "password",
-            "role": "group_leader"
+            "role": "group_leader",
+            "national_id": "12345678"
         },
         {
             "username": "treasurer",
             "password": "password",
-            "role": "treasurer"
+            "role": "treasurer",
+            "national_id": "87654321"
         },
         {
             "username": "unit_leader",
             "password": "password",
-            "role": "unit_leader"
+            "role": "unit_leader",
+            "national_id": "11223344"
         }
     ]
 
@@ -40,7 +43,8 @@ def init_db():
         user = User(
             username=user_data["username"],
             password_hash=get_password_hash(user_data["password"]),
-            role=user_data["role"]
+            role=user_data["role"],
+            national_id=user_data.get("national_id")
         )
         db.add(user)
 
