@@ -198,6 +198,19 @@
   color: #f0d78c;
 }
 
+.login-box button.face-login-shortcut {
+  margin-top: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 14px;
+  font-size: 14px;
+}
+
+.login-box button.face-login-shortcut:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
 .face-loading-overlay {
   position: absolute;
   top: 0;

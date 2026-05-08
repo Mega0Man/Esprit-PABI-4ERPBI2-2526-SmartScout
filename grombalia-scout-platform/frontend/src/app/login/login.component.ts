@@ -178,15 +178,25 @@ export class LoginComponent implements OnInit {
 
     this.authService.signup(signupData).subscribe({
       next: () => {
-        this.loading = false;
         this.registrationMessage = this.enableFaceCapture 
-          ? '✅ Account created with face recognition!' 
-          : '✅ Account created! Use your password to log in.';
-        this.faceMode = 'login';
-        this.resetRegisterForm();
+          ? '✅ Account created! Logging you in...' 
+          : '✅ Account created! Logging you in...';
+        
+        // Auto-login after signup
         setTimeout(() => {
-          this.registrationMessage = '';
-        }, 4000);
+          this.authService.login(this.registerUsername, this.registerPassword).subscribe({
+            next: (response) => {
+              this.loading = false;
+              this.router.navigate([`/dashboard/${this.role}`]);
+            },
+            error: (err) => {
+              this.loading = false;
+              this.faceMode = 'login';
+              this.resetRegisterForm();
+              this.registrationMessage = '✅ Account created! Please log in manually.';
+            }
+          });
+        }, 1500);
       },
       error: (err) => {
         this.loading = false;
