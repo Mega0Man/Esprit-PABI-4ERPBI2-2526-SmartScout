@@ -5,6 +5,8 @@ The goal of this project is to:
 - Clean and organize large datasets
 - Analyze key metrics (KPIs)
 - Visualize insights in a user-friendly dashboard
+- Utilize machine learning models
+- System monitoring 
 
 This project is ideal for tracking performance, identifying trends, and supporting data-driven decision-making.
 ## Dataset used
