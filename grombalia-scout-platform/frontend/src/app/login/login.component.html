@@ -29,6 +29,12 @@
           {{ loading ? 'Signing in...' : 'Sign In' }}
         </button>
       </form>
+      <div style="text-align: center; margin-top: 16px;">
+        <p style="font-size: 13px; color: rgba(255,255,255,0.6);">
+          Don't have an account? 
+          <a href="javascript:void(0)" (click)="activeTab = 'face'; faceMode = 'register'" style="color: #5cb885; text-decoration: none; font-weight: 600;">Register here</a>
+        </p>
+      </div>
       <div class="demo-credentials">
         <p>Demo credentials (username / password)</p>
         <code>{{ role }} / password</code>
@@ -36,8 +42,8 @@
     </div>
 
     <div *ngIf="activeTab === 'face'">
-      <div *ngIf="registrationSuccess" class="success-message" style="margin-bottom:16px; background: rgba(45,140,89,0.2); border:1px solid rgba(45,140,89,0.5); color:#5cb885; padding:12px 16px; border-radius:10px; font-size:14px; text-align:center;">
-        ✅ Face registered successfully!
+      <div *ngIf="registrationMessage" class="success-message" style="margin-bottom:16px; background: rgba(45,140,89,0.2); border:1px solid rgba(45,140,89,0.5); color:#5cb885; padding:12px 16px; border-radius:10px; font-size:14px; text-align:center;">
+        {{ registrationMessage }}
       </div>
       
       <div class="face-tabs">
@@ -47,6 +53,12 @@
         <button class="face-tab-btn" [class.active]="faceMode === 'register'" (click)="faceMode = 'register'">
           Register New Face
         </button>
+      </div>
+
+      <div *ngIf="faceMode === 'login'" style="text-align: center; margin-bottom: 12px;">
+        <p style="font-size: 12px; color: rgba(255,255,255,0.5);">
+          Note: Face login only works if enabled during registration.
+        </p>
       </div>
 
       <div *ngIf="faceMode === 'register'" class="registration-form" style="margin-top:16px;">
@@ -62,13 +74,30 @@
           <label>Password</label>
           <input type="password" [(ngModel)]="registerPassword" placeholder="Create a password">
         </div>
+
+        <div class="face-toggle-section" style="margin-bottom: 20px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+          <div class="toggle-header" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;" (click)="toggleFaceCapture()">
+            <span style="font-size: 14px; font-weight: 500; color: white;">
+              👤 Enable Face Recognition for Faster Login
+            </span>
+            <div class="toggle-switch" [class.active]="enableFaceCapture">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+          <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 8px; line-height: 1.4;">
+            Capture your face to log in instantly next time without typing your password.
+          </p>
+        </div>
         
-        <div *ngIf="!faceCaptured" class="capture-hint" style="color: #f0d78c; font-size: 13px; margin-bottom: 12px; text-align: center;">
+        <div *ngIf="enableFaceCapture && !currentDescriptor" class="capture-hint" style="color: #f0d78c; font-size: 13px; margin-bottom: 12px; text-align: center;">
           📸 Capture your face to complete registration
+        </div>
+        <div *ngIf="enableFaceCapture && currentDescriptor" class="capture-hint" style="color: #5cb885; font-size: 13px; margin-bottom: 12px; text-align: center;">
+          ✅ Face captured successfully!
         </div>
       </div>
 
-      <div class="face-recognition-wrapper" style="position: relative;">
+      <div class="face-recognition-wrapper" style="position: relative;" *ngIf="faceMode === 'login' || (faceMode === 'register' && enableFaceCapture)">
         <app-face-recognition 
           [mode]="faceMode"
           [username]="registerUsername"
@@ -84,6 +113,21 @@
           <div class="spinner"></div>
           <p>Logging you in...</p>
         </div>
+      </div>
+
+      <div *ngIf="faceMode === 'register'" class="register-actions" style="margin-top: 20px;">
+        <button 
+          class="submit-btn" 
+          [disabled]="loading || registerId.length !== 8 || !registerUsername || !registerPassword || (enableFaceCapture && !currentDescriptor)"
+          (click)="onSignupSubmit()"
+          [style.background]="roleConfig?.color"
+          style="width: 100%; padding: 16px; border-radius: 12px; border: none; color: white; font-weight: 600; cursor: pointer;"
+        >
+          {{ loading ? 'Creating Account...' : 'Complete Registration' }}
+        </button>
+        <p *ngIf="!enableFaceCapture" style="text-align: center; font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 12px;">
+          Face recognition skipped. You'll use your password to log in.
+        </p>
       </div>
       
       <div *ngIf="faceErrorMessage" class="error-message" style="margin-top:16px;">{{ faceErrorMessage }}</div>

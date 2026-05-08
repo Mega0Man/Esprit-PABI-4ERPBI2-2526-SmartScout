@@ -79,7 +79,15 @@ export class FaceRecognitionService {
     // Try to get descriptors from backend
     let registeredFaces: Record<string, number[]> = {};
     try {
-      registeredFaces = await firstValueFrom(this.http.get<Record<string, number[]>>(`${this.API_URL}/face-descriptors`));
+      console.log('Fetching face descriptors from backend...');
+      const response = await firstValueFrom(this.http.get<any>(`${this.API_URL}/face-descriptors`));
+      
+      // Handle different possible response formats
+      if (response && typeof response === 'object') {
+        // If it's already a Record<string, number[]>
+        registeredFaces = response;
+      }
+      console.log('Descriptors fetched successfully for users:', Object.keys(registeredFaces));
     } catch (err) {
       console.error('Failed to fetch face descriptors from backend, falling back to local storage', err);
       registeredFaces = this.getRegisteredFaces();
@@ -92,18 +100,28 @@ export class FaceRecognitionService {
       return null;
     }
 
-    const labeledDescriptors = labels.map(label => {
-      const descriptor = new Float32Array(registeredFaces[label]);
-      return new faceapi.LabeledFaceDescriptors(label, [descriptor]);
-    });
+    const labeledDescriptors: faceapi.LabeledFaceDescriptors[] = [];
+    const DESCRIPTOR_LENGTH = 128; // standard face-api.js descriptor length
+
+    for (const label of labels) {
+      const descriptorArray = registeredFaces[label];
+      if (Array.isArray(descriptorArray) && descriptorArray.length === DESCRIPTOR_LENGTH) {
+        labeledDescriptors.push(new faceapi.LabeledFaceDescriptors(label, [new Float32Array(descriptorArray)]));
+      } else {
+        console.warn(`Skipping user "${label}" due to invalid descriptor length: ${descriptorArray?.length || 0}. Expected ${DESCRIPTOR_LENGTH}.`);
+      }
+    }
+
+    if (labeledDescriptors.length === 0) {
+      console.log('No valid face descriptors available for matching');
+      return null;
+    }
 
     // Use a very lenient threshold (0.8) to ensure login happens easily.
-    // In face-api.js, a lower distance means a better match. 
-    // 0.6 is default. 0.8 is very lenient.
     const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.8);
     const bestMatch = faceMatcher.findBestMatch(detection.descriptor);
     
-    console.log(`Recognition attempt for ${labels.length} users. Best match: ${bestMatch.toString()}`);
+    console.log(`Recognition attempt for ${labeledDescriptors.length} valid users. Best match: ${bestMatch.toString()}`);
 
     if (bestMatch.label === 'unknown') {
       return null;

@@ -120,12 +120,15 @@ async def login_for_access_token(
 async def login_by_face(
     username: str, db: Session = Depends(get_db)
 ):
+    print(f"Face login attempt for: {username}")
     user = db.query(User).filter(User.username == username).first()
     if not user:
+        print(f"User {username} not found in database")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found",
         )
+    print(f"User {username} found, creating token for role: {user.role}")
     return create_user_token(user)
 
 

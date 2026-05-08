@@ -24,9 +24,10 @@ export class LoginComponent implements OnInit {
   registerPassword: string = '';
   registerId: string = '';
   faceCaptured: boolean = false;
+  enableFaceCapture: boolean = true;
   currentDescriptor: number[] | null = null;
   faceErrorMessage: string = '';
-  registrationSuccess: boolean = false;
+  registrationMessage: string = '';
 
   roleConfigs = {
     group_leader: {
@@ -105,24 +106,35 @@ export class LoginComponent implements OnInit {
   }
 
   onFaceRecognized(username: string): void {
+    console.log('Face recognized for:', username);
     this.loading = true;
     this.faceErrorMessage = '';
 
     this.authService.loginByFace(username).subscribe({
       next: (response) => {
+        console.log('Face login successful:', response);
         this.loading = false;
         if (response.user.role === this.role) {
           this.router.navigate([`/dashboard/${this.role}`]);
         } else {
-          this.faceErrorMessage = 'Invalid role for this user';
+          this.faceErrorMessage = `Invalid role for this user (Expected ${this.role}, got ${response.user.role})`;
           this.authService.logout();
         }
       },
       error: (err) => {
         this.loading = false;
-        this.faceErrorMessage = 'Face recognized as ' + username + ' but login failed. Ensure user exists in database.';
+        console.error('Face login error:', err);
+        this.faceErrorMessage = 'Face recognized as ' + username + ' but login failed. Ensure user exists in database and role matches.';
       }
     });
+  }
+
+  toggleFaceCapture(): void {
+    this.enableFaceCapture = !this.enableFaceCapture;
+    if (!this.enableFaceCapture) {
+      this.currentDescriptor = null;
+      this.faceCaptured = false;
+    }
   }
 
   onFaceDetected(detection: any): void {
@@ -133,44 +145,55 @@ export class LoginComponent implements OnInit {
 
   onFaceRegistered(success: boolean): void {
     if (success && this.currentDescriptor) {
-      // Validate inputs before signup
-      if (this.registerId.length !== 8) {
-        this.faceErrorMessage = 'National ID must be exactly 8 digits.';
-        return;
-      }
-      if (!this.registerUsername || !this.registerPassword) {
-        this.faceErrorMessage = 'Username and password are required.';
-        return;
-      }
-
-      this.loading = true;
-      this.faceErrorMessage = '';
-
-      const signupData = {
-        username: this.registerUsername,
-        password: this.registerPassword,
-        role: this.role,
-        national_id: this.registerId,
-        face_descriptor: this.currentDescriptor
-      };
-
-      this.authService.signup(signupData).subscribe({
-        next: () => {
-          this.loading = false;
-          this.registrationSuccess = true;
-          this.faceMode = 'login';
-          this.resetRegisterForm();
-          setTimeout(() => {
-            this.registrationSuccess = false;
-          }, 3000);
-        },
-        error: (err) => {
-          this.loading = false;
-          this.faceErrorMessage = err.error?.detail || 'Registration failed. Check if username/ID is already taken or invalid.';
-          console.error('Signup error:', err);
-        }
-      });
+      this.faceCaptured = true;
+      this.faceErrorMessage = ''; // Clear errors on success
     }
+  }
+
+  onSignupSubmit(): void {
+    // Validate inputs before signup
+    if (this.registerId.length !== 8) {
+      this.faceErrorMessage = 'National ID must be exactly 8 digits.';
+      return;
+    }
+    if (!this.registerUsername || !this.registerPassword) {
+      this.faceErrorMessage = 'Username and password are required.';
+      return;
+    }
+    if (this.enableFaceCapture && !this.currentDescriptor) {
+      this.faceErrorMessage = 'Please capture your face or disable face recognition to proceed.';
+      return;
+    }
+
+    this.loading = true;
+    this.faceErrorMessage = '';
+
+    const signupData = {
+      username: this.registerUsername,
+      password: this.registerPassword,
+      role: this.role,
+      national_id: this.registerId,
+      face_descriptor: this.enableFaceCapture && this.currentDescriptor ? this.currentDescriptor : undefined
+    };
+
+    this.authService.signup(signupData).subscribe({
+      next: () => {
+        this.loading = false;
+        this.registrationMessage = this.enableFaceCapture 
+          ? '✅ Account created with face recognition!' 
+          : '✅ Account created! Use your password to log in.';
+        this.faceMode = 'login';
+        this.resetRegisterForm();
+        setTimeout(() => {
+          this.registrationMessage = '';
+        }, 4000);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.faceErrorMessage = err.error?.detail || 'Registration failed. Check if username/ID is already taken or invalid.';
+        console.error('Signup error:', err);
+      }
+    });
   }
 
   private resetRegisterForm(): void {
@@ -179,6 +202,7 @@ export class LoginComponent implements OnInit {
     this.registerId = '';
     this.currentDescriptor = null;
     this.faceCaptured = false;
+    this.enableFaceCapture = true;
   }
 
   onFaceError(error: string): void {

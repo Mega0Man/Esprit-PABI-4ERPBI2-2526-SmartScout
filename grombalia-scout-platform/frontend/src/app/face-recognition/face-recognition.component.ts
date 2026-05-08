@@ -153,11 +153,13 @@ export class FaceRecognitionComponent implements OnInit, OnDestroy, OnChanges {
                    this.stopCamera();
                  }, 2000);
                } else {
-                 this.guideMessage = 'Face not recognized. Keep looking...';
+                   // Optional: Check if the face is actually registered but just not recognized
+                   // For now, keep the generic message to avoid leaking user info if someone else tries
+                   this.guideMessage = 'Face not recognized. Keep looking...';
+                 }
+               } else {
+                 this.guideMessage = 'Face detected! Ready to register.';
                }
-             } else {
-               this.guideMessage = 'Face detected! Ready to register.';
-             }
            } else {
              this.faceService.drawDetection(canvas, video, detection);
              // guideMessage is updated inside checkFacePosition
