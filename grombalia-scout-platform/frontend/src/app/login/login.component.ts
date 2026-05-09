@@ -72,6 +72,11 @@ export class LoginComponent implements OnInit {
     return this.languageService.translate(key);
   }
 
+  getAudioText(lang: Lang): string {
+    const key = this.faceMode === 'register' ? 'register' : 'login';
+    return this.audioService.getAudioText(key, lang);
+  }
+
   setLang(lang: Lang): void {
     this.audioService.stop();
     this.languageService.setLanguage(lang);

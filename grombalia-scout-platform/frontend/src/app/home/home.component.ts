@@ -21,6 +21,10 @@ export class HomeComponent {
     return this.languageService.translate(key);
   }
 
+  getAudioText(lang: Lang): string {
+    return this.audioService.getAudioText('home', lang);
+  }
+
   setLang(lang: Lang): void {
     this.audioService.stop();
     this.languageService.setLanguage(lang);

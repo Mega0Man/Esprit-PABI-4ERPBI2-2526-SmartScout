@@ -4,6 +4,7 @@
       ← {{ getTranslation('home') }}
     </button>
     <div class="lang-switcher" *ngIf="currentLang$ | async as lang">
+      <app-audio-button [text]="getAudioText(lang)" [lang]="lang" style="margin-right: 15px;"></app-audio-button>
       <button (click)="setLang('fr')" [class.active]="lang === 'fr'">FR</button>
       <button (click)="setLang('en')" [class.active]="lang === 'en'">EN</button>
     </div>

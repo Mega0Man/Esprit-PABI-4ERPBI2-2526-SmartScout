@@ -127,15 +127,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getAudioText(lang: Lang): string {
-    const roleKey = this.role === 'group_leader' ? 'group_leader' : 
-                   this.role === 'treasurer' ? 'treasurer' : 'unit_leader';
-    const roleName = this.getTranslation(roleKey);
-    
-    if (lang === 'fr') {
-      return `Vous êtes sur la page d'accueil du tableau de bord ${roleName}`;
-    } else {
-      return `You are on the overview page of the ${roleName} dashboard`;
-    }
+    const roleMap: { [key: string]: string } = {
+      'unit_leader': 'unit-overview',
+      'group_leader': 'group-overview',
+      'treasurer': 'treasurer-overview'
+    };
+    const configKey = roleMap[this.role] || 'unit-overview';
+    return this.audioService.getAudioText(configKey, lang);
   }
 
   logout(): void {

@@ -8,17 +8,15 @@ import { Subscription } from 'rxjs';
   template: `
     <button class="audio-btn" 
             [class.active]="active" 
+            [class.finished]="finished"
             (click)="toggle()" 
             [attr.aria-label]="(active ? 'Stop: ' : 'Listen: ') + text" 
             [attr.aria-pressed]="active">
       <span class="icon-container">
-        <i [class]="active ? 'icon-volume-playing' : 'icon-volume'"></i>
+        <i [class]="active ? 'icon-stop' : (finished ? 'icon-rotate-right' : 'icon-volume')"></i>
       </span>
       <span class="btn-text">
-        {{ active 
-          ? (lang === 'fr' ? 'Lecture...' : 'Playing...') 
-          : (lang === 'fr' ? 'Écouter' : 'Listen') 
-        }}
+        {{ getButtonLabel() }}
       </span>
     </button>
   `,
@@ -43,10 +41,15 @@ import { Subscription } from 'rxjs';
       border-color: rgba(255, 255, 255, 0.4);
     }
     .audio-btn.active {
-      background: rgba(92, 184, 133, 0.2);
-      border-color: #5cb885;
-      color: #5cb885;
-      box-shadow: 0 0 10px rgba(92, 184, 133, 0.3);
+      background: rgba(231, 76, 60, 0.2);
+      border-color: #e74c3c;
+      color: #e74c3c;
+      box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+    }
+    .audio-btn.finished {
+      background: rgba(52, 152, 219, 0.2);
+      border-color: #3498db;
+      color: #3498db;
     }
     .icon-container {
       display: flex;
@@ -56,6 +59,10 @@ import { Subscription } from 'rxjs';
     .btn-text {
       white-space: nowrap;
     }
+    /* Simple icon fallbacks if icons are missing */
+    .icon-stop::before { content: "■"; }
+    .icon-volume::before { content: "🔊"; }
+    .icon-rotate-right::before { content: "↻"; }
   `]
 })
 export class AudioButtonComponent implements OnInit, OnDestroy {
@@ -63,6 +70,7 @@ export class AudioButtonComponent implements OnInit, OnDestroy {
   @Input() lang!: 'fr' | 'en';
 
   active = false;
+  finished = false;
   private sub: Subscription = new Subscription();
 
   constructor(private audioService: AudioService) { }
@@ -71,6 +79,7 @@ export class AudioButtonComponent implements OnInit, OnDestroy {
     this.sub.add(
       this.audioService.onEnd$.subscribe(() => {
         this.active = false;
+        this.finished = true;
       })
     );
   }
@@ -80,12 +89,23 @@ export class AudioButtonComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
+  getButtonLabel(): string {
+    if (this.active) {
+      return this.lang === 'fr' ? 'Arrêter' : 'Stop';
+    }
+    if (this.finished) {
+      return this.lang === 'fr' ? 'Réécouter' : 'Replay';
+    }
+    return this.lang === 'fr' ? 'Écouter' : 'Listen';
+  }
+
   toggle(): void {
     if (this.active) {
       this.audioService.stop();
       this.active = false;
     } else {
       this.active = true;
+      this.finished = false;
       const fullLang = this.lang === 'fr' ? 'fr-FR' : 'en-US';
       this.audioService.speak(this.text, fullLang);
     }
