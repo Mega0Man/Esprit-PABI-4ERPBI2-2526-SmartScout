@@ -63,7 +63,8 @@ export class AudioService {
 
     // 1. Smart Length Control (max 200 chars)
     if (text.length > 200) {
-      text = text.substring(0, 197) + '...';
+      const trimmed = text.substring(0, 197);
+      text = trimmed.substring(0, Math.min(trimmed.length, trimmed.lastIndexOf(' '))) + '...';
     }
 
     // 2. Add slight pause for realism

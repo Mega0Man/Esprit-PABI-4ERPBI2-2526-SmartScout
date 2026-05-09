@@ -44,12 +44,22 @@ import { Subscription } from 'rxjs';
       background: rgba(231, 76, 60, 0.2);
       border-color: #e74c3c;
       color: #e74c3c;
-      box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+      box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+      animation: pulse-red 2s infinite;
+    }
+    @keyframes pulse-red {
+      0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
     }
     .audio-btn.finished {
       background: rgba(52, 152, 219, 0.2);
       border-color: #3498db;
       color: #3498db;
+    }
+    .audio-btn.finished:hover {
+      background: rgba(52, 152, 219, 0.3);
+      box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
     }
     .icon-container {
       display: flex;
