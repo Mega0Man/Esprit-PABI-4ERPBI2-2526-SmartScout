@@ -93,12 +93,24 @@ export class AudioService {
     utterance.pitch = 1;
     utterance.volume = 1;
 
-    // Sélection de la voix
+    // Sélection de la voix (Priorité aux voix premium/naturelles)
     const voices = this.synth.getVoices();
-    const preferredVoice = voices.find(v => v.lang === lang) || voices.find(v => v.lang.startsWith(lang.split('-')[0]));
+    const premiumKeywords = ['Google', 'Natural', 'Premium', 'Enhanced', 'Microsoft', 'Apple'];
     
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
+    const sortedVoices = voices
+      .filter(v => v.lang === lang || v.lang.startsWith(lang.split('-')[0]))
+      .sort((a, b) => {
+        const aPremium = premiumKeywords.some(key => a.name.includes(key)) ? 0 : 1;
+        const bPremium = premiumKeywords.some(key => b.name.includes(key)) ? 0 : 1;
+        // Si les deux sont premium ou aucun ne l'est, on garde l'ordre original ou on préfère la langue exacte
+        if (aPremium === bPremium) {
+          return (a.lang === lang ? 0 : 1) - (b.lang === lang ? 0 : 1);
+        }
+        return aPremium - bPremium;
+      });
+    
+    if (sortedVoices.length > 0) {
+      utterance.voice = sortedVoices[0];
     }
 
     utterance.onend = () => {
