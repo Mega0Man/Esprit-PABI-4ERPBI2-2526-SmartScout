@@ -35,6 +35,12 @@ export class ScoutAssistantComponent implements OnInit, OnDestroy, AfterViewChec
     );
 
     this.sub.add(
+      this.langService.currentLang$.subscribe(() => {
+        this.chatbotService.refreshMessages();
+      })
+    );
+
+    this.sub.add(
       this.chatbotService.nav$.subscribe(path => {
         setTimeout(() => {
           this.router.navigate([path]);
@@ -84,5 +90,17 @@ export class ScoutAssistantComponent implements OnInit, OnDestroy, AfterViewChec
 
   isRtl(): boolean {
     return this.langService.getCurrentLang() === 'ar';
+  }
+
+  isLoginPage(): boolean {
+    return this.router.url.includes('/login/');
+  }
+
+  getThemeColor(): string {
+    const url = this.router.url;
+    if (url.includes('group_leader')) return '#2c7fb8'; // Blue for Group Leader
+    if (url.includes('treasurer')) return '#d4af37';    // Gold/Yellow for Treasurer
+    if (url.includes('unit_leader')) return '#2d8c59';  // Green for Unit Leader
+    return '#22c55e'; // Default Scout Green
   }
 }

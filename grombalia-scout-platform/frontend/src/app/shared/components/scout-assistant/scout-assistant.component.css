@@ -225,6 +225,20 @@
   transform: rotate(135deg);
 }
 
+.read-only-footer {
+  padding: 0.8rem;
+  background: rgba(34, 197, 94, 0.05);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  text-align: center;
+}
+
+.read-only-footer p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
 /* Scrollbar */
 .chat-body::-webkit-scrollbar {
   width: 4px;

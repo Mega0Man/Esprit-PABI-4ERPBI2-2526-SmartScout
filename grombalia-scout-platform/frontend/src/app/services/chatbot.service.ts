@@ -11,6 +11,7 @@ export interface ChatContext {
 
 export interface ChatMessage {
   role: 'assistant' | 'user';
+  templateKey?: string; // To allow re-translation
   content: {
     answer: string;
     explanation: string;
@@ -54,25 +55,43 @@ export class ChatbotService {
     
     // Simulate thinking delay
     setTimeout(() => {
-      this.addMessage('assistant', response.content, response.voiceText);
+      this.addMessage('assistant', response.content, response.voiceText, response.templateKey);
     }, 400);
   }
 
   async sendBotGreeting(page: 'home' | 'planning' | 'members' | 'finance' | 'activities') {
     const lang = this.getLang();
     const response = this.getModuleResponse(page as any, lang);
-    this.addMessage('assistant', response.content, response.voiceText);
+    this.addMessage('assistant', response.content, response.voiceText, page);
   }
 
-  private addMessage(role: 'assistant' | 'user', content: any, voiceText: string) {
+  private addMessage(role: 'assistant' | 'user', content: any, voiceText: string, templateKey?: string) {
     const current = this.messagesSubject.value;
     const newMessage: ChatMessage = {
       role,
       content,
       voiceText,
+      templateKey,
       timestamp: new Date()
     };
     this.messagesSubject.next([...current, newMessage]);
+  }
+
+  refreshMessages() {
+    const current = this.messagesSubject.value;
+    const lang = this.getLang();
+    const updated = current.map(msg => {
+      if (msg.role === 'assistant' && msg.templateKey) {
+        const response = this.getModuleResponse(msg.templateKey as any, lang);
+        return {
+          ...msg,
+          content: response.content,
+          voiceText: response.voiceText
+        };
+      }
+      return msg;
+    });
+    this.messagesSubject.next(updated);
   }
 
   private generateContextualResponse(query: string, page: string, lang: Lang, name?: string) {
@@ -81,74 +100,135 @@ export class ChatbotService {
     // 1. Number-based Navigation Selection
     if (q === '1' || q.includes('one')) {
       this.navSubject.next('/login/group_leader');
-      return this.getModuleResponse('nav_group', lang);
+      return { ...this.getModuleResponse('nav_group', lang), templateKey: 'nav_group' };
     }
     if (q === '2' || q.includes('two')) {
       this.navSubject.next('/login/treasurer');
-      return this.getModuleResponse('nav_treasurer', lang);
+      return { ...this.getModuleResponse('nav_treasurer', lang), templateKey: 'nav_treasurer' };
     }
     if (q === '3' || q.includes('three')) {
       this.navSubject.next('/login/unit_leader');
-      return this.getModuleResponse('nav_unit', lang);
+      return { ...this.getModuleResponse('nav_unit', lang), templateKey: 'nav_unit' };
     }
 
     // 2. Navigation Intent: Login
     if (q.includes('login') || q.includes('sign in') || q.includes('connexion') || q.includes('تسجيل الدخول') || q.includes('go to')) {
       if (q.includes('group') || q.includes('fauj') || q.includes('فوج')) {
         this.navSubject.next('/login/group_leader');
-        return this.getModuleResponse('nav_group', lang);
+        return { ...this.getModuleResponse('nav_group', lang), templateKey: 'nav_group' };
       }
       if (q.includes('treasurer') || q.includes('amin') || q.includes('money') || q.includes('أمين') || q.includes('صندوق')) {
         this.navSubject.next('/login/treasurer');
-        return this.getModuleResponse('nav_treasurer', lang);
+        return { ...this.getModuleResponse('nav_treasurer', lang), templateKey: 'nav_treasurer' };
       }
       if (q.includes('unit') || q.includes('wahda') || q.includes('وحدة')) {
         this.navSubject.next('/login/unit_leader');
-        return this.getModuleResponse('nav_unit', lang);
+        return { ...this.getModuleResponse('nav_unit', lang), templateKey: 'nav_unit' };
       }
       // Ask which role if not specified
-      return this.getModuleResponse('nav_ask_role', lang);
+      return { ...this.getModuleResponse('nav_ask_role', lang), templateKey: 'nav_ask_role' };
     }
 
     // 2. Direct Role Mention (without "login")
     if (q.includes('group leader') || q.includes('chef de groupe') || q.includes('قائد فوج')) {
       this.navSubject.next('/login/group_leader');
-      return this.getModuleResponse('nav_group', lang);
+      return { ...this.getModuleResponse('nav_group', lang), templateKey: 'nav_group' };
     }
     if (q.includes('treasurer') || q.includes('trésorier') || q.includes('أمين صندوق')) {
       this.navSubject.next('/login/treasurer');
-      return this.getModuleResponse('nav_treasurer', lang);
+      return { ...this.getModuleResponse('nav_treasurer', lang), templateKey: 'nav_treasurer' };
     }
     if (q.includes('unit leader') || q.includes('chef d\'unité') || q.includes('قائد وحدة')) {
       this.navSubject.next('/login/unit_leader');
-      return this.getModuleResponse('nav_unit', lang);
+      return { ...this.getModuleResponse('nav_unit', lang), templateKey: 'nav_unit' };
     }
 
     // 3. Check for specific keywords across all pages
     if (q.includes('members') || q.includes('spirit') || q.includes('scouts')) {
-      return this.getModuleResponse('members', lang);
+      return { ...this.getModuleResponse('members', lang), templateKey: 'members' };
     }
     if (q.includes('money') || q.includes('budget') || q.includes('finance') || q.includes('spend')) {
-      return this.getModuleResponse('finance', lang);
+      return { ...this.getModuleResponse('finance', lang), templateKey: 'finance' };
     }
     if (q.includes('plan') || q.includes('food') || q.includes('quantity') || q.includes('prepare')) {
-      return this.getModuleResponse('planning', lang);
+      return { ...this.getModuleResponse('planning', lang), templateKey: 'planning' };
     }
     if (q.includes('activity') || q.includes('game') || q.includes('fun') || q.includes('do next')) {
-      return this.getModuleResponse('activities', lang);
+      return { ...this.getModuleResponse('activities', lang), templateKey: 'activities' };
     }
 
     // 2. If no keyword, but it's a greeting
     if (q.includes('hello') || q.includes('hi') || q.includes('hey') || q.includes('bonjour') || q.includes('مرحبا')) {
-      return this.getModuleResponse('home', lang, name);
+      return { ...this.getModuleResponse('home', lang, name), templateKey: 'home' };
     }
 
     // 3. Fallback to page-specific help
-    return this.getModuleResponse(page as any, lang, name);
+    const fallbackResponse = this.getModuleResponse(page as any, lang, name);
+    return { ...fallbackResponse, templateKey: page };
   }
 
-  private getModuleResponse(page: 'planning' | 'members' | 'finance' | 'activities' | 'home' | 'nav_group' | 'nav_treasurer' | 'nav_unit' | 'nav_ask_role', lang: Lang, name?: string) {
+  private getModuleResponse(page: 'planning' | 'members' | 'finance' | 'activities' | 'home' | 'nav_group' | 'nav_treasurer' | 'nav_unit' | 'nav_ask_role' | 'login_group' | 'login_treasurer' | 'login_unit', lang: Lang, name?: string) {
     const templates: any = {
+      login_group: {
+        en: {
+          answer: "Ready to plan the next adventure?",
+          explanation: "Login to access the Planning and Forecasting tools. You can use your password or Face ID!",
+          action: "Don't have an account? Use your National ID to register below.",
+          voice: ""
+        },
+        fr: {
+          answer: "Prêt pour la prochaine aventure ?",
+          explanation: "Connectez-vous pour accéder aux outils de planification. Utilisez votre mot de passe ou Face ID !",
+          action: "Pas de compte ? Utilisez votre carte d'identité pour vous inscrire ci-dessous.",
+          voice: ""
+        },
+        ar: {
+          answer: "هل أنت مستعد لتخطيط المغامرة القادمة؟",
+          explanation: "سجل الدخول للوصول إلى أدوات التخطيط والتوقعات. يمكنك استخدام كلمة المرور أو بصمة الوجه!",
+          action: "ليس لديك حساب؟ استخدم رقم بطاقة التعريف للتسجيل أدناه.",
+          voice: ""
+        }
+      },
+      login_treasurer: {
+        en: {
+          answer: "Time to check the group's health?",
+          explanation: "Login to manage the budget and spot any unusual spending safely.",
+          action: "Register with your ID if this is your first time as a Treasurer.",
+          voice: ""
+        },
+        fr: {
+          answer: "Un point sur la santé du groupe ?",
+          explanation: "Connectez-vous pour gérer le budget et repérer les dépenses inhabituelles.",
+          action: "Inscrivez-vous avec votre ID si c'est votre première fois en tant que trésorier.",
+          voice: ""
+        },
+        ar: {
+          answer: "هل حان الوقت لمراجعة ميزانية الفرقة؟",
+          explanation: "سجل الدخول لإدارة الميزانية واكتشاف أي إنفاق غير عادي بأمان.",
+          action: "سجل رقم هويتك إذا كانت هذه هي المرة الأولى لك كأمين صندوق.",
+          voice: ""
+        }
+      },
+      login_unit: {
+        en: {
+          answer: "Let's see how the unit is doing!",
+          explanation: "Login to manage members, check engagement, and get activity ideas.",
+          action: "Use the Face ID tab for a faster login if you have already registered.",
+          voice: ""
+        },
+        fr: {
+          answer: "Voyons comment va l'unité !",
+          explanation: "Connectez-vous pour gérer les membres et obtenir des idées d'activités.",
+          action: "Utilisez l'onglet Face ID pour une connexion plus rapide si vous êtes inscrit.",
+          voice: ""
+        },
+        ar: {
+          answer: "لنرى كيف حال الوحدة!",
+          explanation: "سجل الدخول لإدارة الأعضاء والتحقق من التفاعل والحصول على أفكار للأنشطة.",
+          action: "استخدم علامة تبويب بصمة الوجه لتسجيل دخول أسرع إذا كنت مسجلاً بالفعل.",
+          voice: ""
+        }
+      },
       nav_ask_role: {
         en: {
           answer: "Which role do you have?",

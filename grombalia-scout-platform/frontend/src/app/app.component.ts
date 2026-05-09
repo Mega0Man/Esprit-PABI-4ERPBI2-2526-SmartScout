@@ -29,11 +29,23 @@ export class AppComponent implements OnInit {
       this.chatbotService.clearChat();
       this.chatbotService.sendBotGreeting('home');
       page = 'home';
-    } else if (url.includes('forecast') || url.includes('planning') || url.includes('group_leader')) {
+    } else if (url.includes('/login/group_leader')) {
+      this.chatbotService.clearChat();
+      this.chatbotService.sendBotGreeting('login_group' as any);
       page = 'planning';
-    } else if (url.includes('classification') || url.includes('members') || url.includes('unit_leader')) {
+    } else if (url.includes('/login/treasurer')) {
+      this.chatbotService.clearChat();
+      this.chatbotService.sendBotGreeting('login_treasurer' as any);
+      page = 'finance';
+    } else if (url.includes('/login/unit_leader')) {
+      this.chatbotService.clearChat();
+      this.chatbotService.sendBotGreeting('login_unit' as any);
       page = 'members';
-    } else if (url.includes('anomaly') || url.includes('finance') || url.includes('treasurer')) {
+    } else if (url.includes('forecast') || url.includes('planning')) {
+      page = 'planning';
+    } else if (url.includes('classification') || url.includes('members')) {
+      page = 'members';
+    } else if (url.includes('anomaly') || url.includes('finance')) {
       page = 'finance';
     } else if (url.includes('recommendation') || url.includes('activities')) {
       page = 'activities';
