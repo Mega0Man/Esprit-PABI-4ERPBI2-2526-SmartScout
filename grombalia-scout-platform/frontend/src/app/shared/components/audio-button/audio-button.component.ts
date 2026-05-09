@@ -77,7 +77,7 @@ import { Subscription } from 'rxjs';
 })
 export class AudioButtonComponent implements OnInit, OnDestroy {
   @Input() text!: string;
-  @Input() lang!: 'fr' | 'en';
+  @Input() lang!: 'fr' | 'en' | 'ar';
 
   active = false;
   finished = false;
@@ -101,12 +101,12 @@ export class AudioButtonComponent implements OnInit, OnDestroy {
 
   getButtonLabel(): string {
     if (this.active) {
-      return this.lang === 'fr' ? 'Arrêter' : 'Stop';
+      return this.lang === 'fr' ? 'Arrêter' : (this.lang === 'en' ? 'Stop' : 'إيقاف');
     }
     if (this.finished) {
-      return this.lang === 'fr' ? 'Réécouter' : 'Replay';
+      return this.lang === 'fr' ? 'Réécouter' : (this.lang === 'en' ? 'Replay' : 'إعادة الاستماع');
     }
-    return this.lang === 'fr' ? 'Écouter' : 'Listen';
+    return this.lang === 'fr' ? 'Écouter' : (this.lang === 'en' ? 'Listen' : 'استمع');
   }
 
   toggle(): void {
@@ -116,7 +116,7 @@ export class AudioButtonComponent implements OnInit, OnDestroy {
     } else {
       this.active = true;
       this.finished = false;
-      const fullLang = this.lang === 'fr' ? 'fr-FR' : 'en-US';
+      const fullLang = this.lang === 'fr' ? 'fr-FR' : (this.lang === 'en' ? 'en-US' : 'ar-SA');
       this.audioService.speak(this.text, fullLang);
     }
   }

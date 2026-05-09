@@ -12,6 +12,7 @@
       <app-audio-button [text]="getAudioText(lang)" [lang]="lang" style="margin-right: 15px;"></app-audio-button>
       <button (click)="setLang('fr')" [class.active]="lang === 'fr'">FR</button>
       <button (click)="setLang('en')" [class.active]="lang === 'en'">EN</button>
+      <button (click)="setLang('ar')" [class.active]="lang === 'ar'">AR</button>
     </div>
   </header>
 
@@ -21,10 +22,10 @@
     <div class="home-left">
       <h1 class="home-welcome-title">{{ getTranslation('welcome') }}!</h1>
       <span class="home-fleur">⚜</span>
-      <p class="home-choose-title">{{ (currentLang$ | async) === 'fr' ? 'CHOISISSEZ VOTRE TABLEAU DE BORD' : 'CHOOSE YOUR DASHBOARD' }}</p>
-      <p class="home-choose-sub">{{ (currentLang$ | async) === 'fr' ? 'Sélectionnez votre rôle pour accéder à votre espace' : 'Select your role to access your dashboard' }}</p>
+      <p class="home-choose-title">{{ getTranslation('choose_dashboard') }}</p>
+      <p class="home-choose-sub">{{ getTranslation('select_role') }}</p>
       <div class="home-quote">
-        <p>{{ (currentLang$ | async) === 'fr' ? 'Servir, aider, construire un monde meilleur.' : 'To serve, to help, to build a better world.' }}</p>
+        <p>{{ getTranslation('scout_quote') }}</p>
       </div>
     </div>
 

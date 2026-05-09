@@ -11,6 +11,7 @@
       <div class="lang-switcher" *ngIf="currentLang$ | async as lang">
         <button (click)="setLang('fr')" [class.active]="lang === 'fr'">FR</button>
         <button (click)="setLang('en')" [class.active]="lang === 'en'">EN</button>
+        <button (click)="setLang('ar')" [class.active]="lang === 'ar'">AR</button>
       </div>
       <div class="ml-buttons">
         <button *ngIf="role === 'group_leader'" class="ml-nav-btn" (click)="openModel('forecast')">📊 {{ getTranslation('scout_forecast') }}</button>
@@ -26,8 +27,7 @@
     <div class="page-header-with-audio" *ngIf="currentLang$ | async as lang">
       <div class="header-titles">
         <h2>{{ getTranslation(role) }} {{ getTranslation('overview') }}</h2>
-        <p *ngIf="lang === 'fr'">Bienvenue sur votre espace de pilotage scout.</p>
-        <p *ngIf="lang === 'en'">Welcome to your scout management space.</p>
+        <p>{{ getTranslation('scout_pilot_space') }}</p>
       </div>
       <app-audio-button 
         [text]="getAudioText(lang)" 
@@ -43,8 +43,9 @@
         <iframe *ngIf="roleConfig?.powerBIUrl" [src]="roleConfig?.powerBIUrl" class="powerbi-iframe" frameborder="0" allowfullscreen="true"></iframe>
         <div *ngIf="!roleConfig?.powerBIUrl" class="powerbi-placeholder">
           <div class="placeholder-icon">📈</div>
-          <h4>{{ roleConfig?.name }} Dashboard</h4>
-          <p>Power BI report coming soon! Share your embed URL when you have it.</p>
+          <h4>{{ getTranslation(role) }} {{ getTranslation('dashboard') }}</h4>
+          <p>{{ getTranslation('coming_soon') }}</p>
+          <p>{{ getTranslation('share_embed') }}</p>
         </div>
       </div>
     </section>

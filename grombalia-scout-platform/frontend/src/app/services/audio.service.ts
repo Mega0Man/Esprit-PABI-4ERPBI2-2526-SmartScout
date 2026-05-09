@@ -12,7 +12,8 @@ export class AudioService {
 
   private intros = {
     fr: ["Vous êtes sur la page ", "Bienvenue sur la page ", "Cette section vous présente "],
-    en: ["You are on the ", "Welcome to the ", "This section shows the "]
+    en: ["You are on the ", "Welcome to the ", "This section shows the "],
+    ar: ["أنت الآن في صفحة ", "مرحباً بك في ", "هذا القسم يعرض "]
   };
 
   constructor() { }
@@ -20,21 +21,22 @@ export class AudioService {
   /**
    * Récupère le texte du résumé pour une page donnée avec rotation des intros.
    */
-  getAudioText(pageKey: string, lang: 'fr' | 'en'): string {
+  getAudioText(pageKey: string, lang: 'fr' | 'en' | 'ar'): string {
     const config = PAGE_AUDIO_CONFIG[pageKey];
     if (!config) return '';
 
-    let text = lang === 'fr' ? config.fr : config.en;
+    let text = lang === 'fr' ? config.fr : (lang === 'en' ? config.en : config.ar);
     
     // Rotation des intros pour rendre l'assistant moins robotique
-    const introList = lang === 'fr' ? this.intros.fr : this.intros.en;
+    const introList = lang === 'fr' ? this.intros.fr : (lang === 'en' ? this.intros.en : this.intros.ar);
     const randomIntro = introList[Math.floor(Math.random() * introList.length)];
     
     // Si le texte commence par une intro standard (ex: "Vous êtes sur la page"), on la remplace
     const standardIntros = [
       "Vous êtes sur la page ", "Bienvenue sur la page ", "Cette section vous présente ",
       "You are on the ", "Welcome to the ", "This section shows the ",
-      "You are on the page ", "Welcome to ", "This section presents "
+      "You are on the page ", "Welcome to ", "This section presents ",
+      "أنت الآن في صفحة ", "مرحباً بك في ", "هذا القسم يعرض "
     ];
 
     for (const intro of standardIntros) {
@@ -80,9 +82,9 @@ export class AudioService {
   /**
    * Lit le texte à voix haute en utilisant window.speechSynthesis.
    * @param text Le texte à lire.
-   * @param lang La langue ('fr-FR' ou 'en-US').
+   * @param lang La langue ('fr-FR', 'en-US', or 'ar-SA').
    */
-  speak(text: string, lang: 'fr-FR' | 'en-US'): void {
+  speak(text: string, lang: 'fr-FR' | 'en-US' | 'ar-SA'): void {
     // 4. Auto-stop previous audio
     this.stop();
 

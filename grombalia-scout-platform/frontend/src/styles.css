@@ -13,6 +13,10 @@ body {
   color: #fff;
 }
 
+[dir="rtl"] body, [dir="rtl"] {
+  font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
+}
+
 :root {
   --green-dark: #0f2f23;
   --green-medium: #1a4031;

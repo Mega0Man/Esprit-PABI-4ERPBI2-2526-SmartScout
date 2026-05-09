@@ -8,6 +8,7 @@
       <div class="lang-switcher">
         <button (click)="setLang('fr')" [class.active]="lang === 'fr'">FR</button>
         <button (click)="setLang('en')" [class.active]="lang === 'en'">EN</button>
+        <button (click)="setLang('ar')" [class.active]="lang === 'ar'">AR</button>
       </div>
     </div>
   </div>
@@ -15,7 +16,7 @@
   <div class="login-box">
     <div class="login-icon">{{ roleConfig?.icon }}</div>
     <h1>{{ getTranslation(role) }}</h1>
-    <p class="subtitle-login">{{ (currentLang$ | async) === 'fr' ? 'Connectez-vous pour accéder au tableau de bord' : 'Sign in to access the dashboard' }}</p>
+    <p class="subtitle-login">{{ getTranslation('login_to_dashboard') }}</p>
 
     <div class="tabs">
       <button class="tab-btn" [class.active]="activeTab === 'password'" (click)="activeTab = 'password'">
@@ -30,25 +31,25 @@
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
           <label>{{ getTranslation('username') }}</label>
-          <input type="text" formControlName="username" [placeholder]="(currentLang$ | async) === 'fr' ? 'Entrez votre nom d\'utilisateur' : 'Enter your username'" required>
+          <input type="text" formControlName="username" [placeholder]="getTranslation('enter_username')" required>
         </div>
         <div class="form-group">
           <label>{{ getTranslation('password') }}</label>
-          <input type="password" formControlName="password" [placeholder]="(currentLang$ | async) === 'fr' ? 'Entrez votre mot de passe' : 'Enter your password'" required>
+          <input type="password" formControlName="password" [placeholder]="getTranslation('enter_password')" required>
         </div>
         <div *ngIf="error" class="error-message">{{ error }}</div>
         <button type="submit" [disabled]="loading" [style.background]="roleConfig?.color">
-          {{ loading ? ( (currentLang$ | async) === 'fr' ? 'Connexion...' : 'Signing in...') : getTranslation('sign_in') }}
+          {{ loading ? getTranslation('signing_in') : getTranslation('sign_in') }}
         </button>
         
         <div style="margin-top: 12px; display: flex; align-items: center; gap: 10px;">
           <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
-          <span style="font-size: 12px; color: rgba(255,255,255,0.4);">{{ (currentLang$ | async) === 'fr' ? 'OU' : 'OR' }}</span>
+          <span style="font-size: 12px; color: rgba(255,255,255,0.4);">{{ getTranslation('or') }}</span>
           <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
         </div>
 
         <button type="button" class="face-login-shortcut" (click)="activeTab = 'face'; faceMode = 'login'">
-          👤 {{ (currentLang$ | async) === 'fr' ? 'Connexion avec Face ID' : 'Login with Face ID' }}
+          👤 {{ getTranslation('login_face_id') }}
         </button>
       </form>
       <div style="text-align: center; margin-top: 16px;">
@@ -58,7 +59,7 @@
         </p>
       </div>
       <div class="demo-credentials">
-        <p>{{ (currentLang$ | async) === 'fr' ? 'Identifiants de démonstration (nom d\'utilisateur / mot de passe)' : 'Demo credentials (username / password)' }}</p>
+        <p>{{ getTranslation('demo_creds') }}</p>
         <code>{{ role }} / password</code>
       </div>
     </div>
@@ -70,31 +71,31 @@
       
       <div class="face-tabs">
         <button class="face-tab-btn" [class.active]="faceMode === 'login'" (click)="faceMode = 'login'">
-          {{ (currentLang$ | async) === 'fr' ? 'Connexion' : 'Login' }}
+          {{ getTranslation('login') }}
         </button>
         <button class="face-tab-btn" [class.active]="faceMode === 'register'" (click)="faceMode = 'register'">
-          {{ (currentLang$ | async) === 'fr' ? 'Nouvelle Inscription' : 'Register New Face' }}
+          {{ getTranslation('register_new_face') }}
         </button>
       </div>
 
       <div *ngIf="faceMode === 'login'" style="text-align: center; margin-bottom: 12px;">
         <p style="font-size: 12px; color: rgba(255,255,255,0.5);">
-          {{ (currentLang$ | async) === 'fr' ? 'Note : La connexion faciale ne fonctionne que si elle a été activée lors de l\'inscription.' : 'Note: Face login only works if enabled during registration.' }}
+          {{ getTranslation('face_login_note') }}
         </p>
       </div>
 
       <div *ngIf="faceMode === 'register'" class="registration-form" style="margin-top:16px;">
         <div class="form-group">
           <label>{{ getTranslation('national_id') }}</label>
-          <input type="text" [(ngModel)]="registerId" [placeholder]="(currentLang$ | async) === 'fr' ? 'Entrez votre CIN' : 'Enter your 8-digit ID'" maxlength="8">
+          <input type="text" [(ngModel)]="registerId" [placeholder]="getTranslation('enter_id')" maxlength="8">
         </div>
         <div class="form-group">
           <label>{{ getTranslation('username') }}</label>
-          <input type="text" [(ngModel)]="registerUsername" [placeholder]="(currentLang$ | async) === 'fr' ? 'Entrez votre nom d\'utilisateur' : 'Enter your username'">
+          <input type="text" [(ngModel)]="registerUsername" [placeholder]="getTranslation('enter_username')">
         </div>
         <div class="form-group">
           <label>{{ getTranslation('password') }}</label>
-          <input type="password" [(ngModel)]="registerPassword" [placeholder]="(currentLang$ | async) === 'fr' ? 'Créez un mot de passe' : 'Create a password'">
+          <input type="password" [(ngModel)]="registerPassword" [placeholder]="getTranslation('create_password')">
         </div>
 
         <div class="face-toggle-section" style="margin-bottom: 20px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
@@ -112,10 +113,10 @@
         </div>
         
         <div *ngIf="enableFaceCapture && !currentDescriptor" class="capture-hint" style="color: #f0d78c; font-size: 13px; margin-bottom: 12px; text-align: center;">
-          📸 {{ (currentLang$ | async) === 'fr' ? 'Capturez votre visage pour terminer l\'inscription' : 'Capture your face to complete registration' }}
+          📸 {{ getTranslation('capture_face') }}
         </div>
         <div *ngIf="enableFaceCapture && currentDescriptor" class="capture-hint" style="color: #5cb885; font-size: 13px; margin-bottom: 12px; text-align: center;">
-          ✅ {{ (currentLang$ | async) === 'fr' ? 'Visage capturé avec succès !' : 'Face captured successfully!' }}
+          ✅ {{ getTranslation('face_captured_success') }}
         </div>
       </div>
 
@@ -133,7 +134,7 @@
         <!-- Loading overlay -->
         <div *ngIf="loading" class="face-loading-overlay">
           <div class="spinner"></div>
-          <p>{{ (currentLang$ | async) === 'fr' ? 'Connexion en cours...' : 'Logging you in...' }}</p>
+          <p>{{ getTranslation('logging_in') }}</p>
         </div>
       </div>
 
@@ -145,10 +146,10 @@
           [style.background]="roleConfig?.color"
           style="width: 100%; padding: 16px; border-radius: 12px; border: none; color: white; font-weight: 600; cursor: pointer;"
         >
-          {{ loading ? ((currentLang$ | async) === 'fr' ? 'Création du compte...' : 'Creating Account...') : getTranslation('complete_reg') }}
+          {{ loading ? getTranslation('creating_account') : getTranslation('complete_reg') }}
         </button>
         <p *ngIf="!enableFaceCapture" style="text-align: center; font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 12px;">
-          {{ (currentLang$ | async) === 'fr' ? 'Reconnaissance faciale ignorée. Utilisez votre mot de passe pour vous connecter.' : 'Face recognition skipped. You\'ll use your password to log in.' }}
+          {{ getTranslation('face_skipped') }}
         </p>
       </div>
       
