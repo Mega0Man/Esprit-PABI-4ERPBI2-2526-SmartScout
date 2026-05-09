@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang }}" dir="{{ 'rtl' if lang == 'ar' else 'ltr' }}">
 <head>
 <meta charset="UTF-8">
-<title>Scout Treasury AI</title>
+<title>{{ t.title_main }} {{ t.title_accent }}</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -24,13 +24,28 @@
 body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'DM Sans', {{ "'Noto Sans Arabic'," if lang == 'ar' }} sans-serif;
     min-height: 100vh;
     display:flex;
+    flex-direction: column;
     align-items:center;
     justify-content:center;
     padding:2rem;
 }
+
+[dir="rtl"] { text-align: right; }
+
+.lang-toggle {
+    position: fixed; top: 1rem; right: 1rem;
+    display: flex; gap: 0.5rem; z-index: 100;
+}
+[dir="rtl"] .lang-toggle { right: auto; left: 1rem; }
+.lang-btn {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 0.4rem 0.8rem; border-radius: 8px;
+    text-decoration: none; font-size: 0.8rem;
+}
+.lang-btn.active { border-color: var(--accent); color: var(--accent); }
 
 /* forest grid */
 body::before {
@@ -113,6 +128,7 @@ button {
     border-radius:12px;
     cursor:pointer;
     border:none;
+    font-size:1rem;
 }
 
 button:hover { opacity:0.9; }
@@ -161,29 +177,34 @@ button:hover { opacity:0.9; }
 
 <body>
 
+<div class="lang-toggle">
+    <a href="?lang=en" class="lang-btn {{ 'active' if lang == 'en' }}">🇺🇸 EN</a>
+    <a href="?lang=fr" class="lang-btn {{ 'active' if lang == 'fr' }}">🇫🇷 FR</a>
+    <a href="?lang=ar" class="lang-btn {{ 'active' if lang == 'ar' }}">🇸🇦 AR</a>
+</div>
+
 <div class="wrapper">
 
 <div class="header">
-    <div class="badge">🌲 Scout Treasury AI</div>
-    <h1>Scout <span>Finance</span> Monitor</h1>
-    <p class="subtitle">Detect anomalies in scout budget transactions</p>
+    <div class="badge">{{ t.badge }}</div>
+    <h1>{{ t.title_main }} <span>{{ t.title_accent }}</span></h1>
+    <p class="subtitle">{{ t.subtitle }}</p>
 </div>
 
 <div class="card">
+<div style="margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.4;">
+    <p><strong>{{ 'How it works:' if lang == 'en' else ('Comment ça marche :' if lang == 'fr' else 'كيف يعمل هذا :') }}</strong> {{ t.how_it_works }}</p>
+</div>
 
 <form method="POST">
-
-    <label>Budget Value</label>
+    <label>{{ t.label_amount }}</label>
     <div class="input-wrap">
-        <input type="number" step="any" name="amount" placeholder="e.g. 1200" required>
+        <input type="number" step="any" name="amount" placeholder="e.g. 150.00" required>
     </div>
-
-    <button type="submit">🔍 Analyze Transaction</button>
-
+    <button type="submit">{{ t.btn_run }}</button>
 </form>
 
 {% if result %}
-
 <div class="result
     {% if 'Normal' in result %} normal
     {% elif 'Fraud' in result %} fraud
@@ -191,22 +212,41 @@ button:hover { opacity:0.9; }
     {% else %} event
     {% endif %}
 ">
+    <h3 style="margin-bottom: 0.5rem;">
+        {% if 'Normal' in result %} {{ t.res_healthy }}
+        {% elif 'Fraud' in result %} {{ t.res_unusual }}
+        {% elif 'Input' in result %} {{ t.res_error }}
+        {% else %} {{ t.res_event }}
+        {% endif %}
+    </h3>
 
-    <h3>{{ result }}</h3>
+    <p style="font-size: 0.85rem; margin-bottom: 1rem;">
+        {% if 'Normal' in result %} {{ t.desc_healthy }}
+        {% elif 'Fraud' in result %} {{ t.desc_unusual }}
+        {% elif 'Input' in result %} {{ t.desc_error }}
+        {% else %} {{ t.desc_event }}
+        {% endif %}
+    </p>
+
+    <div style="margin-top: 1rem; padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.85rem; text-align: {{ 'right' if lang == 'ar' else 'left' }};">
+        <strong>{{ t.action_label }}</strong>
+        {% if 'Normal' in result %} {{ t.action_healthy }}
+        {% elif 'Fraud' in result %} {{ t.action_unusual }}
+        {% elif 'Input' in result %} {{ t.action_error }}
+        {% else %} {{ t.action_event }}
+        {% endif %}
+    </div>
 
     {% if value is not none %}
-    <div class="value">💰 Value: {{ value }}</div>
+    <div class="value" style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.5rem;">
+        {{ t.checked_label }} {{ "{:,.2f}".format(value) }}
+    </div>
     {% endif %}
-
 </div>
-
 {% endif %}
-
 </div>
 
-<p class="footer">Model: IQR Anomaly Detection · Scout Treasury System</p>
-
+<p class="footer">{{ t.footer }}</p>
 </div>
-
 </body>
 </html>

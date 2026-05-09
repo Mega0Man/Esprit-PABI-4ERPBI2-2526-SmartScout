@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang }}" dir="{{ 'rtl' if lang == 'ar' else 'ltr' }}">
 <head>
 <meta charset="UTF-8">
-<title>Activity Participation Forecast</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>{{ t.title_main }} {{ t.title_accent }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
     --bg: #0b1d13; --card: #12281b;
@@ -14,10 +14,26 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
     background: var(--bg); color: var(--text);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'DM Sans', {{ "'Noto Sans Arabic'," if lang == 'ar' }} sans-serif;
     min-height: 100vh; display:flex;
+    flex-direction: column;
     align-items:center; justify-content:center; padding:2rem;
 }
+[dir="rtl"] { text-align: right; }
+[dir="rtl"] .history-row { flex-direction: row-reverse; }
+
+.lang-toggle {
+    position: fixed; top: 1rem; right: 1rem;
+    display: flex; gap: 0.5rem; z-index: 100;
+}
+[dir="rtl"] .lang-toggle { right: auto; left: 1rem; }
+.lang-btn {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 0.4rem 0.8rem; border-radius: 8px;
+    text-decoration: none; font-size: 0.8rem;
+}
+.lang-btn.active { border-color: var(--accent); color: var(--accent); }
+
 body::before {
     content:''; position:fixed; inset:0;
     background-image:
@@ -51,6 +67,7 @@ select {
     background-repeat: no-repeat;
     background-position: right 0.9rem center;
 }
+[dir="rtl"] select { background-position: left 0.9rem center; }
 select:focus {
     border-color:var(--accent); outline:none;
     box-shadow:0 0 0 3px rgba(34,197,94,0.2);
@@ -64,7 +81,7 @@ button {
 button:hover { opacity:0.9; }
 .result { margin-top:1.5rem; padding:1.4rem; border-radius:14px; }
 .result.success { background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); }
-.result.error   { background:rgba(239,68,68,0.1);  border:1px solid rgba(239,68,68,0.3); }
+.result.error   { background:rgba(239,68,68,0.1) ;  border:1px solid rgba(239,68,68,0.3); }
 .forecast-box {
     background:rgba(255,255,255,0.05); border-radius:10px;
     padding:1.2rem; text-align:center; margin-top:1rem;
@@ -84,28 +101,33 @@ button:hover { opacity:0.9; }
 .history-row:last-child { border-bottom:none; }
 .history-row .season { color:var(--muted); }
 .history-row .val    { color:var(--text); font-weight:500; }
-.incomplete-badge {
-    display:inline-block; background:rgba(245,158,11,0.15);
-    color:#f59e0b; border:1px solid rgba(245,158,11,0.3);
-    border-radius:6px; font-size:0.72rem; padding:2px 8px; margin-top:4px;
-}
 .footer { text-align:center; margin-top:1.5rem; font-size:0.75rem; color:var(--muted); }
 </style>
 </head>
 <body>
+
+<div class="lang-toggle">
+    <a href="?lang=en" class="lang-btn {{ 'active' if lang == 'en' }}">🇺🇸 EN</a>
+    <a href="?lang=fr" class="lang-btn {{ 'active' if lang == 'fr' }}">🇫🇷 FR</a>
+    <a href="?lang=ar" class="lang-btn {{ 'active' if lang == 'ar' }}">🇸🇦 AR</a>
+</div>
+
 <div class="wrapper">
   <div style="text-align:center; margin-bottom:1.5rem;">
-    <div class="badge">🌲 Scout Forecast AI</div>
-    <h1>Participation <span>Forecast</span></h1>
-    <p class="subtitle">ARIMA-powered prediction for scout activity participation</p>
+    <div class="badge">{{ t.badge }}</div>
+    <h1>{{ t.title_main }} <span>{{ t.title_accent }}</span></h1>
+    <p class="subtitle">{{ t.subtitle }}</p>
   </div>
 
   <div class="card">
-    <form method="POST">
+    <div style="margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.4;">
+      <p><strong>{{ 'How it works:' if lang == 'en' else ('Comment ça marche :' if lang == 'fr' else 'كيف يعمل هذا :') }}</strong> {{ t.how_it_works }}</p>
+    </div>
 
-      <label>Select Unit (optional)</label>
+    <form method="POST">
+      <label>{{ t.label_group }}</label>
       <select name="unit_id">
-        <option value="">All Units</option>
+        <option value="">{{ 'All Groups' if lang == 'en' else ('Toutes les unités' if lang == 'fr' else 'كل الوحدات') }}</option>
         <option value="1">1 — الأشبال</option>
         <option value="2">2 — الزهرات</option>
         <option value="3">3 — الكشافة</option>
@@ -114,7 +136,7 @@ button:hover { opacity:0.9; }
         <option value="6">6 — الدليلات</option>
       </select>
 
-      <button type="submit">🔍 Run Forecast</button>
+      <button type="submit">{{ t.btn_run }}</button>
     </form>
 
     {% if error %}
@@ -125,20 +147,22 @@ button:hover { opacity:0.9; }
 
     {% if result %}
     <div class="result success">
-      <p style="font-size:0.8rem; color:var(--muted);">
-        Forecasting for <strong>{{ result.next_season }}</strong>
-        &nbsp;·&nbsp; Unit: <strong>{{ result.unit_id }}</strong>
-        &nbsp;·&nbsp; ARIMA{{ result.best_order }}
-        {% if result.incomplete_season %}
-        <br><span class="incomplete-badge">⚠ {{ result.incomplete_season }} excluded (incomplete)</span>
-        {% endif %}
-      </p>
+      <div style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
+        <h3 style="color: var(--accent); margin-bottom: 0.2rem;">{{ t.insight_title }}</h3>
+        <p style="font-size: 0.85rem;">
+          {% if result.arima_delta > 0 %}
+            {{ t.insight_more.format(season=result.next_season)|safe }}
+          {% else %}
+            {{ t.insight_steady.format(season=result.next_season)|safe }}
+          {% endif %}
+        </p>
+      </div>
 
       <div class="forecast-box">
-        <div class="model">ARIMA Forecast — {{ result.next_season }}</div>
+        <div class="model">{{ t.expected_label.format(season=result.next_season) }}</div>
         <div class="value">
           {% if result.arima_forecast is defined and result.arima_forecast is not none %}
-            {{ "{:,}".format(result.arima_forecast) }}
+            {{ "{:,}".format(result.arima_forecast) }} {{ t.scouts_unit }}
           {% else %}
             —
           {% endif %}
@@ -146,18 +170,29 @@ button:hover { opacity:0.9; }
         {% if result.arima_delta is defined and result.arima_delta is not none %}
         <div class="delta {{ 'up' if result.arima_delta > 0 else 'down' }}">
           {{ '▲' if result.arima_delta > 0 else '▼' }}
-          {{ result.arima_delta }}% vs last season
+          {{ result.arima_delta|abs }}% {{ t.delta_more if result.arima_delta > 0 else t.delta_fewer }}
         </div>
         {% endif %}
       </div>
 
+      <div style="margin-top: 1rem; padding: 0.8rem; background: rgba(34,197,94,0.05); border-radius: 8px; font-size: 0.85rem;">
+        <strong>{{ t.action_label }}</strong> 
+        {% if result.arima_delta > 10 %}
+          {{ t.action_high }}
+        {% elif result.arima_delta < -10 %}
+          {{ t.action_low }}
+        {% else %}
+          {{ t.action_stable }}
+        {% endif %}
+      </div>
+
       <div class="history">
-        <h4>Historical (complete seasons)</h4>
+        <h4>{{ t.history_title }}</h4>
         {% if result.history is defined and result.history %}
         {% for season, val in result.history.items() %}
         <div class="history-row">
           <span class="season">{{ season }}</span>
-          <span class="val">{{ "{:,}".format(val) }}</span>
+          <span class="val">{{ "{:,}".format(val) }} {{ t.scouts_unit }}</span>
         </div>
         {% endfor %}
         {% else %}
@@ -171,7 +206,7 @@ button:hover { opacity:0.9; }
     {% endif %}
   </div>
 
-  <p class="footer">Model: ARIMA · Synthetic augmentation ({{ 8 }} seasons) · Scout Treasury System</p>
+  <p class="footer">{{ t.footer }}</p>
 </div>
 </body>
 </html>

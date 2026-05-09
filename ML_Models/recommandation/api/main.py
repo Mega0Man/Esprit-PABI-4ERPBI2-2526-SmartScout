@@ -29,15 +29,28 @@ DB_URL = os.getenv("DB_URL", "postgresql+psycopg2://postgres:12345678@127.0.0.1:
 
 
 def load_data():
+    csv_dim = os.path.join(os.path.dirname(__file__), "..", "dim-activity.csv")
+    csv_fact = os.path.join(os.path.dirname(__file__), "..", "fact-participation.csv")
+    
+    # Prefer local CSV data for reliability in local environments
+    if os.path.exists(csv_dim) and os.path.exists(csv_fact):
+        print("Loading model data from local CSV files...")
+        dim_activity = pd.read_csv(csv_dim)
+        fact_participation = pd.read_csv(csv_fact)
+        return dim_activity, fact_participation
+
+    # Fallback to Database if CSVs are missing
+    print(f"CSVs not found, attempting to connect to database...")
     engine = create_engine(DB_URL)
     try:
         dim_activity = pd.read_sql('SELECT * FROM "Dim_Activity";', engine)
         fact_participation = pd.read_sql('SELECT * FROM "Fact_Participation_Activity";', engine)
     except Exception as e:
-        print(f"Using CSV data (could not load from DB: {e})")
-        dim_activity = pd.read_csv(os.path.join(os.path.dirname(__file__), "..", "dim-activity.csv"))
-        fact_participation = pd.read_csv(os.path.join(os.path.dirname(__file__), "..", "fact-participation.csv"))
-    engine.dispose()
+        print(f"Error: Could not load data from CSV or Database. {e}")
+        # Return empty dataframes to avoid crashing startup, but API calls will fail
+        return pd.DataFrame(), pd.DataFrame()
+    finally:
+        engine.dispose()
     return dim_activity, fact_participation
 
 

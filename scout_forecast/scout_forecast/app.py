@@ -1,32 +1,42 @@
 # app.py - Flask Web App integrated with FastAPI
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 import os
 import requests
+import json
 
 app = Flask(__name__)
+app.secret_key = "scout_secret_key"
 
 API_URL = os.getenv("API_URL", "http://localhost:8001")
+
+# Load translations
+with open("../../translations.json", "r", encoding="utf-8") as f:
+    TRANSLATIONS = json.load(f)["scout_forecast"]
 
 def _normalize_result(result):
     if not isinstance(result, dict):
         return {}
-
     normalized = dict(result)
-
-    # Align FastAPI response keys with what `templates/index.html` expects.
     if "arima_forecast" not in normalized and "forecast" in normalized:
         normalized["arima_forecast"] = normalized["forecast"]
     if "arima_delta" not in normalized and "delta_percent" in normalized:
         normalized["arima_delta"] = normalized["delta_percent"]
     if "best_order" not in normalized and "best_arima_order" in normalized:
         normalized["best_order"] = normalized["best_arima_order"]
-
     return normalized
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     result = None
     error = None
+    
+    # Handle language toggle
+    lang = request.args.get('lang')
+    if lang in ['en', 'fr', 'ar']:
+        session['lang'] = lang
+    
+    current_lang = session.get('lang', 'en')
+    t = TRANSLATIONS[current_lang]
 
     if request.method == 'POST':
         unit_id = request.form.get('unit_id') or None
@@ -47,7 +57,7 @@ def index():
         except Exception as e:
             error = str(e)
 
-    return render_template('index.html', result=result, error=error)
+    return render_template('index.html', result=result, error=error, t=t, lang=current_lang)
 
 @app.route('/api/forecast', methods=['POST'])
 def api_forecast():

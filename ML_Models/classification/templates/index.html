@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang }}" dir="{{ 'rtl' if lang == 'ar' else 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scout Retention Prediction</title>
+    <title>{{ t.title_main }} {{ t.title_accent }}</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -25,13 +25,28 @@
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'DM Sans', {{ "'Noto Sans Arabic'," if lang == 'ar' }} sans-serif;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 2rem 1rem;
         }
+
+        [dir="rtl"] { text-align: right; }
+
+        .lang-toggle {
+            position: fixed; top: 1rem; right: 1rem;
+            display: flex; gap: 0.5rem; z-index: 100;
+        }
+        [dir="rtl"] .lang-toggle { right: auto; left: 1rem; }
+        .lang-btn {
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--text); padding: 0.4rem 0.8rem; border-radius: 8px;
+            text-decoration: none; font-size: 0.8rem;
+        }
+        .lang-btn.active { border-color: var(--accent-neu); color: var(--accent-neu); }
 
         /* Background forest grid */
         body::before {
@@ -102,6 +117,7 @@
             top: 50%;
             transform: translateY(-50%);
         }
+        [dir="rtl"] .input-icon { left: auto; right: 0.9rem; }
 
         input {
             width: 100%;
@@ -111,6 +127,7 @@
             color: var(--text);
             padding: 0.75rem 0.9rem 0.75rem 2.5rem;
         }
+        [dir="rtl"] input { padding: 0.75rem 2.5rem 0.75rem 0.9rem; }
 
         input:focus {
             border-color: var(--accent-neu);
@@ -123,12 +140,6 @@
             gap: 1rem;
         }
 
-        .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 1.5rem 0;
-        }
-
         button {
             width: 100%;
             padding: 0.9rem;
@@ -137,6 +148,8 @@
             font-weight: 700;
             border-radius: 12px;
             cursor: pointer;
+            border: none;
+            font-size: 1rem;
         }
 
         button:hover { opacity: 0.9; }
@@ -171,21 +184,30 @@
 
 <body>
 
+<div class="lang-toggle">
+    <a href="?lang=en" class="lang-btn {{ 'active' if lang == 'en' }}">🇺🇸 EN</a>
+    <a href="?lang=fr" class="lang-btn {{ 'active' if lang == 'fr' }}">🇫🇷 FR</a>
+    <a href="?lang=ar" class="lang-btn {{ 'active' if lang == 'ar' }}">🇸🇦 AR</a>
+</div>
+
 <div class="wrapper">
 
     <div class="header">
-        <div class="badge">🌲 Scout AI Model</div>
-        <h1>Scout <span>Retention</span> Prediction</h1>
-        <p class="subtitle">Estimate if a unit will achieve high retention (≥ 90%)</p>
+        <div class="badge">{{ t.badge }}</div>
+        <h1>{{ t.title_main }} <span>{{ t.title_accent }}</span></h1>
+        <p class="subtitle">{{ t.subtitle }}</p>
     </div>
 
     <div class="card">
+        <div style="margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.4;">
+            <p><strong>{{ 'How it works:' if lang == 'en' else ('Comment ça marche :' if lang == 'fr' else 'كيف يعمل هذا :') }}</strong> {{ t.how_it_works }}</p>
+        </div>
 
         <form method="POST" action="/predict">
 
             <div class="row-2">
                 <div class="form-group">
-                    <label>Members</label>
+                    <label>{{ t.label_members }}</label>
                     <div class="input-wrap">
                         <span class="input-icon">👥</span>
                         <input type="number" name="nb_members" placeholder="e.g. 45" required>
@@ -193,7 +215,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Leaders</label>
+                    <label>{{ t.label_leaders }}</label>
                     <div class="input-wrap">
                         <span class="input-icon">🧭</span>
                         <input type="number" name="nb_leaders" placeholder="e.g. 4" required>
@@ -202,33 +224,40 @@
             </div>
 
             <div class="form-group">
-                <label>Growth Rate (%)</label>
+                <label>{{ t.label_growth }}</label>
                 <div class="input-wrap">
                     <span class="input-icon">📈</span>
-                    <input type="number" name="taux_evolution" placeholder="e.g. -4.0" required>
+                    <input type="number" step="0.1" name="taux_evolution" placeholder="e.g. 5.0" required>
                 </div>
-                <p class="subtitle">Change compared to previous season</p>
+                <p style="font-size: 0.7rem; color: var(--muted); margin-top: 4px;">{{ t.growth_hint }}</p>
             </div>
 
-            <div class="divider"></div>
-
-            <button type="submit">🔍 Predict</button>
+            <button type="submit">{{ t.btn_run }}</button>
 
         </form>
 
-        {% if prediction is defined %}
-        <div class="result {{ 'high' if pred_class == 1 else 'low' }}">
-            <div class="result-icon">{{ '🏕️' if pred_class == 1 else '⚠️' }}</div>
-            <div>{{ prediction }}</div>
-            <div>Confidence: {{ confidence }}%</div>
-        </div>
+        {% if prediction %}
+            <div class="result {{ 'high' if pred_class == 1 else 'low' }}">
+                <div class="result-icon">
+                    {{ '🌟' if pred_class == 1 else '🌱' }}
+                </div>
+                <h3 style="margin: 0.5rem 0;">
+                    {{ t.result_high_title if pred_class == 1 else t.result_low_title }}
+                </h3>
+                <p style="font-size: 0.85rem; margin-bottom: 1rem;">
+                    {{ t.result_high_desc if pred_class == 1 else t.result_low_desc }}
+                </p>
+
+                <div style="padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.85rem; text-align: {{ 'right' if lang == 'ar' else 'left' }};">
+                    <strong>{{ t.action_label }}</strong>
+                    {{ t.action_high if pred_class == 1 else t.action_low }}
+                </div>
+            </div>
         {% endif %}
 
     </div>
 
-    <p class="footer">Model: Random Forest · Scout Retention</p>
-
+    <p class="footer">{{ t.footer }}</p>
 </div>
-
 </body>
 </html>

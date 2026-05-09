@@ -51,11 +51,22 @@ def get_engine(db_url):
     return create_engine(db_url)
 
 def load_participation_data(engine):
-    raw_conn = engine.raw_connection()
+    # Try loading from database first, but fall back to project CSVs if it fails
     try:
-        df = pd.read_sql_query('SELECT * FROM "Fact_Participation_Activity";', raw_conn)
-    finally:
-        raw_conn.close()
+        raw_conn = engine.raw_connection()
+        try:
+            df = pd.read_sql_query('SELECT * FROM "Fact_Participation_Activity";', raw_conn)
+        finally:
+            raw_conn.close()
+    except Exception:
+        # Silently fall back to CSV if DB fails
+        csv_path = os.path.join(os.path.dirname(__file__), "..", "..", "ML_Models", "recommandation", "fact-participation.csv")
+        if os.path.exists(csv_path):
+            df = pd.read_csv(csv_path)
+        else:
+            # Last resort: return empty structure to avoid crash
+            return pd.DataFrame(), pd.DataFrame(), []
+
     season_order = sorted(df['season'].unique())
     season_map = {s: i for i, s in enumerate(season_order)}
     df['season_idx'] = df['season'].map(season_map)
