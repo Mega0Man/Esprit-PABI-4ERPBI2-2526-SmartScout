@@ -1,12 +1,14 @@
 <div class="login-container" [ngStyle]="{'background': 'linear-gradient(135deg, ' + roleConfig?.gradientFrom + ' 0%, ' + roleConfig?.gradientTo + ' 100%)'}">
-  <div class="header-overlay" style="position: absolute; top: 0; left: 0; right: 0; padding: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 10;">
-    <button class="back-button" (click)="goHome()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; backdrop-filter: blur(4px);">
+  <div class="top-bar">
+    <button class="back-button" (click)="goHome()">
       ← {{ getTranslation('home') }}
     </button>
-    <div class="lang-switcher" *ngIf="currentLang$ | async as lang">
-      <app-audio-button [text]="getAudioText(lang)" [lang]="lang" style="margin-right: 15px;"></app-audio-button>
-      <button (click)="setLang('fr')" [class.active]="lang === 'fr'">FR</button>
-      <button (click)="setLang('en')" [class.active]="lang === 'en'">EN</button>
+    <div class="top-bar-right" *ngIf="currentLang$ | async as lang">
+      <app-audio-button [text]="getAudioText(lang)" [lang]="lang"></app-audio-button>
+      <div class="lang-switcher">
+        <button (click)="setLang('fr')" [class.active]="lang === 'fr'">FR</button>
+        <button (click)="setLang('en')" [class.active]="lang === 'en'">EN</button>
+      </div>
     </div>
   </div>
 

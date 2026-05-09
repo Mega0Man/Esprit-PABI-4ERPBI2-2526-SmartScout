@@ -7,22 +7,76 @@
   padding: 20px;
 }
 
-.back-button {
+.top-bar {
   position: absolute;
-  top: 30px;
-  left: 30px;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+}
+
+.back-button {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  padding: 12px 24px;
-  border-radius: 10px;
+  padding: 10px 20px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 500;
+  backdrop-filter: blur(8px);
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .back-button:hover {
   background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-4px);
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.lang-switcher {
+  display: flex;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+.lang-switcher button {
+  background: transparent;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: all 0.3s ease !important;
+  width: auto !important; /* Override the login-box button width: 100% */
+}
+
+.lang-switcher button.active {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.lang-switcher button:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
 }
 
 .login-box {
