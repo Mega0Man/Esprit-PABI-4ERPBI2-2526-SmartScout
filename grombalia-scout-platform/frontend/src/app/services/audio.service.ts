@@ -3,11 +3,14 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { PAGE_AUDIO_CONFIG } from '../config/page-audio.config';
 
+export type LangCode = 'fr-FR' | 'en-US' | 'ar-SA';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AudioService {
   private synth: SpeechSynthesis = window.speechSynthesis;
+  private voices: SpeechSynthesisVoice[] = [];
   public onEnd$ = new Subject<void>();
 
   private intros = {
@@ -16,7 +19,17 @@ export class AudioService {
     ar: ["أنت الآن في صفحة ", "مرحباً بك في ", "هذا القسم يعرض "]
   };
 
-  constructor() { }
+  constructor() {
+    this.loadVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = () => this.loadVoices();
+    }
+  }
+
+  private loadVoices(): void {
+    this.voices = this.synth.getVoices();
+    console.log('AudioService: Available voices loaded:', this.voices.length);
+  }
 
   /**
    * Récupère le texte du résumé pour une page donnée avec rotation des intros.
@@ -70,7 +83,6 @@ export class AudioService {
     }
 
     // 2. Add slight pause for realism
-    // On remplace le point par un point suivi d'un espace plus long
     text = text.replace(/\. /g, '.   ');
     text = text.replace(/, /g, ',  ');
     text = text.replace(/! /g, '!   ');
@@ -80,51 +92,95 @@ export class AudioService {
   }
 
   /**
+   * Finds the best voice for a specific language code.
+   */
+  private getBestVoice(langCode: LangCode): SpeechSynthesisVoice | null {
+    if (this.voices.length === 0) {
+      this.loadVoices();
+    }
+
+    // Priorities for each language
+    const preferredNames: string[] = [];
+    if (langCode === 'en-US') {
+      preferredNames.push('Google US English', 'Microsoft David', 'Microsoft Zira', 'Samantha', 'Alex');
+    } else if (langCode === 'fr-FR') {
+      preferredNames.push('Google français', 'Microsoft Hortense', 'Microsoft Julie', 'Thomas', 'Audrey');
+    } else if (langCode === 'ar-SA') {
+      preferredNames.push('Microsoft Hoda', 'Google العربية', 'Maged', 'Laila');
+    }
+
+    // 1. Filter by exact language code
+    let filtered = this.voices.filter(v => v.lang === langCode);
+
+    // 2. If no exact match, filter by base language (e.g., 'en' for 'en-US')
+    if (filtered.length === 0) {
+      const baseLang = langCode.split('-')[0];
+      filtered = this.voices.filter(v => v.lang.startsWith(baseLang));
+      console.warn(`AudioService: No exact match for ${langCode}, falling back to base language ${baseLang}`);
+    }
+
+    if (filtered.length === 0) {
+      console.error(`AudioService: No voice found for ${langCode}`);
+      return null;
+    }
+
+    // 3. Prevent wrong accents (CRITICAL: English shouldn't use a French voice)
+    if (langCode.startsWith('en')) {
+      filtered = filtered.filter(v => !v.name.toLowerCase().includes('french') && !v.lang.startsWith('fr'));
+    }
+
+    // 4. Try to find a preferred voice among the filtered ones
+    const best = filtered.find(v => preferredNames.some(name => v.name.includes(name))) || filtered[0];
+    
+    console.log(`AudioService: Selected voice for ${langCode}:`, best.name, `(${best.lang})`);
+    return best;
+  }
+
+  /**
    * Lit le texte à voix haute en utilisant window.speechSynthesis.
    * @param text Le texte à lire.
-   * @param lang La langue ('fr-FR', 'en-US', or 'ar-SA').
+   * @param langCode La langue ('fr-FR', 'en-US', or 'ar-SA').
    */
-  speak(text: string, lang: 'fr-FR' | 'en-US' | 'ar-SA'): void {
-    // 4. Auto-stop previous audio
+  speak(text: string, langCode: LangCode): void {
     this.stop();
 
-    const processedText = this.preprocessText(text);
-    const utterance = new SpeechSynthesisUtterance(processedText);
-    utterance.lang = lang;
+    const utterance = new SpeechSynthesisUtterance(this.preprocessText(text));
+    const selectedVoice = this.getBestVoice(langCode);
+
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+      utterance.lang = selectedVoice.lang;
+    } else {
+      // Fallback if no voice found
+      utterance.lang = langCode;
+      console.warn(`AudioService: Using default system voice for ${langCode}`);
+    }
+
     utterance.rate = 0.9;
     utterance.pitch = 1;
     utterance.volume = 1;
 
-    // Sélection de la voix (Priorité aux voix premium/naturelles)
-    const voices = this.synth.getVoices();
-    const premiumKeywords = ['Google', 'Natural', 'Premium', 'Enhanced', 'Microsoft', 'Apple'];
-    
-    const sortedVoices = voices
-      .filter(v => v.lang === lang || v.lang.startsWith(lang.split('-')[0]))
-      .sort((a, b) => {
-        const aPremium = premiumKeywords.some(key => a.name.includes(key)) ? 0 : 1;
-        const bPremium = premiumKeywords.some(key => b.name.includes(key)) ? 0 : 1;
-        // Si les deux sont premium ou aucun ne l'est, on garde l'ordre original ou on préfère la langue exacte
-        if (aPremium === bPremium) {
-          return (a.lang === lang ? 0 : 1) - (b.lang === lang ? 0 : 1);
-        }
-        return aPremium - bPremium;
-      });
-    
-    if (sortedVoices.length > 0) {
-      utterance.voice = sortedVoices[0];
-    }
-
-    utterance.onend = () => {
-      this.onEnd$.next();
-    };
-
+    utterance.onend = () => this.onEnd$.next();
     utterance.onerror = (err) => {
-      console.error('SpeechSynthesis error:', err);
+      console.error('AudioService: SpeechSynthesis error:', err);
       this.onEnd$.next();
     };
 
     this.synth.speak(utterance);
+  }
+
+  /**
+   * Test function to speak sample text in all languages.
+   */
+  testVoices(): void {
+    console.log('AudioService: Testing all voices...');
+    this.speak("Testing English voice. Hello everyone.", 'en-US');
+    setTimeout(() => {
+      this.speak("Test de la voix française. Bonjour à tous.", 'fr-FR');
+    }, 4000);
+    setTimeout(() => {
+      this.speak("تجربة الصوت العربي. مرحباً بالجميع.", 'ar-SA');
+    }, 8000);
   }
 
   /**

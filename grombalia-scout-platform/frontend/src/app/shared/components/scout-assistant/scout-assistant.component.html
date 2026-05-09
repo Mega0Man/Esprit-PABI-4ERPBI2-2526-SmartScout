@@ -1,0 +1,59 @@
+<!-- src/app/shared/components/scout-assistant/scout-assistant.component.html -->
+<div class="assistant-container" [class.open]="isOpen" [dir]="isRtl() ? 'rtl' : 'ltr'">
+  
+  <!-- Floating Button -->
+  <button class="assistant-trigger" (click)="toggleChat()">
+    <span *ngIf="!isOpen">💬</span>
+    <span *ngIf="isOpen">✕</span>
+  </button>
+
+  <!-- Chat Window -->
+  <div class="assistant-window" *ngIf="isOpen">
+    <div class="assistant-header">
+      <div class="header-info">
+        <span class="status-dot"></span>
+        <h3>Scout Assistant</h3>
+      </div>
+      <button class="close-btn" (click)="isOpen = false">✕</button>
+    </div>
+
+    <div class="chat-body" #scrollContainer>
+      <div *ngFor="let msg of messages" class="message" [class.user]="msg.role === 'user'">
+        <div class="message-bubble">
+          
+          <!-- User Message -->
+          <p *ngIf="msg.role === 'user'">{{ msg.content.answer }}</p>
+
+          <!-- Assistant Message -->
+          <div *ngIf="msg.role === 'assistant'" class="assistant-content">
+            <div class="section answer">
+              <p>✅ {{ msg.content.answer }}</p>
+            </div>
+            <div class="section explanation" *ngIf="msg.content.explanation">
+              <p>💡 {{ msg.content.explanation }}</p>
+            </div>
+            <div class="section action" *ngIf="msg.content.action">
+              <div class="action-list">
+                <p *ngFor="let line of msg.content.action.split('\n')">🎯 {{ line }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <span class="timestamp">{{ msg.timestamp | date:'HH:mm' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-footer">
+      <input 
+        type="text" 
+        [(ngModel)]="userInput" 
+        (keyup.enter)="sendMessage()"
+        [placeholder]="isRtl() ? 'اكتب رسالتك...' : (getTranslation('home') === 'Accueil' ? 'Écrivez votre message...' : 'Type your message...')"
+      >
+      <button (click)="sendMessage()">
+        <span class="send-icon">➤</span>
+      </button>
+    </div>
+  </div>
+</div>
