@@ -9,15 +9,15 @@
 
     <style>
         :root {
-            --bg: #0b1d13;
-            --card: #12281b;
+            --bg: #030e1e;
+            --card: #071a33;
             --border: rgba(255,255,255,0.08);
-            --accent-hi: #22c55e;
+            --accent-hi: #3b82f6;
             --accent-lo: #ef4444;
-            --accent-neu: #4ade80;
-            --text: #ecfdf5;
-            --muted: #94a3b8;
-            --input-bg: #1b3a2b;
+            --accent-neu: #60a5fa;
+            --text: #dbeafe;
+            --muted: #6b92c7;
+            --input-bg: #0a1f3a;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -48,14 +48,14 @@
         }
         .lang-btn.active { border-color: var(--accent-neu); color: var(--accent-neu); }
 
-        /* Background forest grid */
+        /* Background grid */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
             background-image:
-                linear-gradient(rgba(34,197,94,0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(34,197,94,0.05) 1px, transparent 1px);
+                linear-gradient(rgba(59,130,246,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59,130,246,0.05) 1px, transparent 1px);
             background-size: 40px 40px;
             pointer-events: none;
         }
@@ -72,9 +72,9 @@
 
         .badge {
             display: inline-block;
-            background: rgba(34,197,94,0.15);
+            background: rgba(59,130,246,0.15);
             color: var(--accent-neu);
-            border: 1px solid rgba(34,197,94,0.3);
+            border: 1px solid rgba(59,130,246,0.3);
             border-radius: 50px;
             font-size: 0.7rem;
             padding: 0.3rem 0.9rem;
@@ -131,7 +131,7 @@
 
         input:focus {
             border-color: var(--accent-neu);
-            box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
         }
 
         .row-2 {
@@ -144,7 +144,7 @@
             width: 100%;
             padding: 0.9rem;
             background: var(--accent-neu);
-            color: #022c22;
+            color: #010d1f;
             font-weight: 700;
             border-radius: 12px;
             cursor: pointer;
@@ -162,8 +162,8 @@
         }
 
         .result.high {
-            background: rgba(34,197,94,0.15);
-            border: 1px solid rgba(34,197,94,0.3);
+            background: rgba(59,130,246,0.15);
+            border: 1px solid rgba(59,130,246,0.3);
         }
 
         .result.low {
