@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { ChatbotService } from './services/chatbot.service';
+import { AuthService } from './services/auth.service';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -10,7 +11,11 @@ import { filter } from 'rxjs/operators';
 export class AppComponent implements OnInit {
   title = 'Grombalia Scout Group';
 
-  constructor(private router: Router, private chatbotService: ChatbotService) {}
+  constructor(
+    private router: Router,
+    private chatbotService: ChatbotService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.router.events.pipe(
@@ -51,11 +56,11 @@ export class AppComponent implements OnInit {
       page = 'activities';
     }
 
-    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    
+    const user = this.authService.getCurrentUser();
+
     this.chatbotService.setContext({
       page,
-      user_name: user.username
+      user_name: user?.username
     });
   }
 }

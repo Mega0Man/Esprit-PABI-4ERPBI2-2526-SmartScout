@@ -1,5 +1,14 @@
 /* src/app/shared/components/navbar/navbar.component.scss */
 
+.lang-sync {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
 .navbar {
   height: 72px;
   background: var(--color-bg-secondary);
@@ -149,19 +158,29 @@
   
   .user-info {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 4px;
     text-align: right;
-    
+    max-width: 200px;
+
     .user-greeting {
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       color: var(--color-text-secondary);
       font-weight: 500;
+      white-space: nowrap;
     }
-    
+
     .user-name {
       font-size: 0.85rem;
       font-weight: 700;
       color: var(--color-text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 140px;
     }
   }
   

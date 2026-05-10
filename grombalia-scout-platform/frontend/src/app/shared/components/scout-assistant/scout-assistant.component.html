@@ -1,5 +1,5 @@
 <!-- src/app/shared/components/scout-assistant/scout-assistant.component.html -->
-<div class="assistant-container" [class.open]="isOpen" [dir]="isRtl() ? 'rtl' : 'ltr'">
+<div class="assistant-container" [class.open]="isOpen" [class.rtl]="isRtl()" [dir]="isRtl() ? 'rtl' : 'ltr'">
   
   <!-- Floating Button -->
   <button class="assistant-trigger" (click)="toggleChat()">

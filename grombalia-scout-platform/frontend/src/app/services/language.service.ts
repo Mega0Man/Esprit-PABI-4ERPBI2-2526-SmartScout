@@ -96,7 +96,14 @@ export class LanguageService {
     // Dashboard strings
     'scout_pilot_space': { fr: 'Bienvenue sur votre espace de pilotage scout.', en: 'Welcome to your scout management space.', ar: 'مرحباً بك في مساحة الإدارة الكشفية الخاصة بك.' },
     'coming_soon': { fr: 'Rapport Power BI bientôt disponible !', en: 'Power BI report coming soon!', ar: 'تقرير Power BI سيتوفر قريباً!' },
-    'share_embed': { fr: 'Partagez votre URL d\'intégration quand vous l\'aurez.', en: 'Share your embed URL when you have it.', ar: 'شارك رابط التضمين الخاص بك عند توفره.' }
+    'share_embed': { fr: 'Partagez votre URL d\'intégration quand vous l\'aurez.', en: 'Share your embed URL when you have it.', ar: 'شارك رابط التضمين الخاص بك عند توفره.' },
+
+    // Navbar (post-login)
+    'user_greeting': { fr: 'Salut,', en: 'Hi,', ar: 'أهلاً،' },
+    'navbar_recommendations': { fr: 'Recommandations', en: 'Recommendations', ar: 'المقترحات' },
+    'navbar_anomalies': { fr: 'Anomalies', en: 'Anomalies', ar: 'الشذوذات' },
+    'navbar_forecast': { fr: 'Prévisions', en: 'Forecast', ar: 'التوقعات' },
+    'navbar_classification': { fr: 'Classification', en: 'Classification', ar: 'التصنيف' }
   };
 
   constructor() {

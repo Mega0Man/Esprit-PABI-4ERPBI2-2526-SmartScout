@@ -8,15 +8,17 @@
 
 <style>
 :root {
-    --bg: #0b1d13;
-    --card: #12281b;
-    --border: rgba(255,255,255,0.08);
-    --accent: #22c55e;
+    --bg: #1b1012;
+    --card: #2a1619;
+    --border: rgba(220, 38, 38, 0.22);
+    --accent: #DC2626;
+    --accent-cta: #EF4444;
+    --accent-soft: rgba(220, 38, 38, 0.16);
     --danger: #ef4444;
     --warn: #f59e0b;
-    --text: #ecfdf5;
-    --muted: #94a3b8;
-    --input-bg: #1b3a2b;
+    --text: #fee2e2;
+    --muted: #fca5a5;
+    --input-bg: #3a1d21;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -52,8 +54,8 @@ body::before {
     position:fixed;
     inset:0;
     background-image:
-        linear-gradient(rgba(34,197,94,0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(34,197,94,0.05) 1px, transparent 1px);
+        linear-gradient(rgba(220,38,38,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(220,38,38,0.06) 1px, transparent 1px);
     background-size:40px 40px;
     pointer-events:none;
 }
@@ -64,9 +66,9 @@ body::before {
 
 .badge {
     display:inline-block;
-    background: rgba(34,197,94,0.15);
-    color: var(--accent);
-    border:1px solid rgba(34,197,94,0.3);
+    background: var(--accent-soft);
+    color: var(--accent-cta);
+    border:1px solid rgba(220,38,38,0.35);
     border-radius:50px;
     font-size:0.7rem;
     padding:0.3rem 0.9rem;
@@ -114,15 +116,15 @@ input {
 input:focus {
     border-color: var(--accent);
     outline:none;
-    box-shadow:0 0 0 3px rgba(34,197,94,0.2);
+    box-shadow:0 0 0 3px rgba(239, 68, 68, 0.25);
 }
 
 button {
     width:100%;
     margin-top:1.2rem;
     padding:0.9rem;
-    background: var(--accent);
-    color:#022c22;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-cta) 100%);
+    color:#ffffff;
     font-weight:700;
     border-radius:12px;
     cursor:pointer;
@@ -140,8 +142,8 @@ button:hover { opacity:0.9; }
 }
 
 .result.normal {
-    background: rgba(34,197,94,0.15);
-    border:1px solid rgba(34,197,94,0.3);
+    background: var(--accent-soft);
+    border:1px solid rgba(220,38,38,0.35);
 }
 
 ul.recommendations {
@@ -152,8 +154,8 @@ ul.recommendations {
 }
 
 ul.recommendations li {
-    background: rgba(34,197,94,0.08);
-    border:1px solid rgba(34,197,94,0.2);
+    background: rgba(220,38,38,0.08);
+    border:1px solid rgba(220,38,38,0.22);
     border-radius:8px;
     padding:0.6rem;
     margin-bottom:0.5rem;
@@ -172,9 +174,9 @@ ul.recommendations li {
 <body>
 
 <div class="lang-toggle">
-    <a href="?lang=en" class="lang-btn {{ 'active' if lang == 'en' }}">🇺🇸 EN</a>
-    <a href="?lang=fr" class="lang-btn {{ 'active' if lang == 'fr' }}">🇫🇷 FR</a>
-    <a href="?lang=ar" class="lang-btn {{ 'active' if lang == 'ar' }}">🇸🇦 AR</a>
+    <a href="?lang=en" class="lang-btn {{ 'active' if lang == 'en' }}">EN</a>
+    <a href="?lang=fr" class="lang-btn {{ 'active' if lang == 'fr' }}">FR</a>
+    <a href="?lang=ar" class="lang-btn {{ 'active' if lang == 'ar' }}">AR</a>
 </div>
 
 <div class="wrapper">
@@ -206,12 +208,12 @@ ul.recommendations li {
     {% if recs %}
     <ul class="recommendations">
         {% for r in recs %}
-        <li>🌟 {{ r }}</li>
+        <li>{{ r }}</li>
         {% endfor %}
     </ul>
     {% endif %}
 
-    <div style="margin-top: 1rem; padding: 0.8rem; background: rgba(34,197,94,0.05); border-radius: 8px; font-size: 0.85rem; text-align: {{ 'right' if lang == 'ar' else 'left' }};">
+    <div style="margin-top: 1rem; padding: 0.8rem; background: rgba(220,38,38,0.08); border-radius: 8px; font-size: 0.85rem; text-align: {{ 'right' if lang == 'ar' else 'left' }};">
         <strong>{{ t.action_label }}</strong> 
         {{ t.action_desc }}
     </div>

@@ -1,4 +1,6 @@
 <nav class="navbar">
+  <!-- Keeps template in sync when language changes (async subscription) -->
+  <span class="lang-sync" aria-hidden="true">{{ langService.currentLang$ | async }}</span>
   <div class="nav-container">
     <!-- Left: Branding -->
     <div class="nav-left" routerLink="/">
@@ -6,11 +8,7 @@
         <app-logo [height]="40"></app-logo>
       </div>
       <div class="branding-text">
-        <span class="role-subtitle" [ngSwitch]="role">
-          <ng-container *ngSwitchCase="'unit-leader'">Chef d'Unité</ng-container>
-          <ng-container *ngSwitchCase="'treasurer'">Trésorier</ng-container>
-          <ng-container *ngSwitchCase="'group-leader'">Chef de Groupe</ng-container>
-        </span>
+        <span class="role-subtitle">{{ translate(roleTitleKey()) }}</span>
       </div>
     </div>
 
@@ -22,7 +20,7 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.364-6.364l-.707-.707M6.364 18.364l-.707.707M18.364 18.364l-.707.707M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/>
           </svg>
-          <span>Recommandations</span>
+          <span>{{ translate('navbar_recommendations') }}</span>
         </button>
 
         <!-- Treasurer Actions -->
@@ -31,7 +29,7 @@
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             <path d="M12 8v4M12 16h.01"/>
           </svg>
-          <span>Anomalies</span>
+          <span>{{ translate('navbar_anomalies') }}</span>
         </button>
 
         <!-- Group Leader Actions -->
@@ -41,14 +39,14 @@
               <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
               <polyline points="17 6 23 6 23 12"></polyline>
             </svg>
-            <span>Prévisions</span>
+            <span>{{ translate('navbar_forecast') }}</span>
           </button>
           <button class="nav-btn" (click)="openModel('classification')">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
               <line x1="7" y1="7" x2="7.01" y2="7"></line>
             </svg>
-            <span>Classification</span>
+            <span>{{ translate('navbar_classification') }}</span>
           </button>
         </ng-container>
       </ng-container>
@@ -65,15 +63,15 @@
 
       <div class="user-profile">
         <div class="user-info">
-          <span class="user-greeting">Salut,</span>
-          <span class="user-name">{{ currentUser?.username }}</span>
+          <span class="user-greeting">{{ translate('user_greeting') }}</span>
+          <span class="user-name">{{ displayName }}</span>
         </div>
         <div class="avatar-circle">
-          {{ currentUser?.username?.charAt(0).toUpperCase() }}
+          {{ avatarLetter }}
         </div>
       </div>
 
-      <button class="logout-btn" (click)="logout()" title="Déconnexion">
+      <button class="logout-btn" (click)="logout()" [title]="translate('logout')">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
         </svg>

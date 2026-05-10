@@ -1,6 +1,24 @@
 /* src/app/shared/components/scout-assistant/scout-assistant.component.scss */
 
+/* Fixed palette — does not inherit route/login theme (--color-* may be unset on home) */
 .assistant-container {
+  /* Brand-aligned navy; stable on every route */
+  --assistant-accent: #1d2b53;
+  --assistant-accent-strong: #2c3f73;
+  --assistant-accent-soft: rgba(29, 43, 83, 0.2);
+  --assistant-accent-glow: rgba(29, 43, 83, 0.35);
+
+  --assistant-bg: #0f172a;
+  --assistant-bg-muted: #1e293b;
+  --assistant-surface: #1e293b;
+  --assistant-border: rgba(248, 250, 252, 0.12);
+
+  --assistant-text: #f1f5f9;
+  --assistant-text-muted: #94a3b8;
+
+  --assistant-radius: 16px;
+  --assistant-transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
   position: fixed;
   bottom: 32px;
   right: 32px;
@@ -16,8 +34,8 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: var(--color-accent);
-  border: none;
+  background: linear-gradient(145deg, var(--assistant-accent) 0%, var(--assistant-accent-strong) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: #FFFFFF;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -28,7 +46,7 @@
   
   &:hover {
     transform: scale(1.1);
-    box-shadow: 0 8px 24px var(--color-accent-soft);
+    box-shadow: 0 8px 24px var(--assistant-accent-glow);
   }
   
   &:active {
@@ -71,10 +89,10 @@
   width: 380px;
   max-height: 600px;
   height: calc(100vh - 150px);
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  background: var(--assistant-bg-muted);
+  border: 1px solid var(--assistant-border);
+  border-radius: var(--assistant-radius);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -93,8 +111,8 @@
 
 .assistant-header {
   padding: 16px 20px;
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
+  background: var(--assistant-bg);
+  border-bottom: 1px solid var(--assistant-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -104,6 +122,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+  flex: 1;
   
   .status-indicator {
     position: relative;
@@ -112,32 +132,38 @@
       display: block;
       width: 10px;
       height: 10px;
-      background: var(--color-accent);
+      background: #34d399;
       border-radius: 50%;
-      box-shadow: 0 0 0 4px var(--color-accent-soft);
+      box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.2);
       
       &::after {
         content: '';
         position: absolute;
         inset: -2px;
         border-radius: 50%;
-        border: 2px solid var(--color-accent);
+        border: 2px solid rgba(52, 211, 153, 0.75);
         animation: pulse 2s infinite;
       }
     }
   }
   
   .header-text {
+    min-width: 0;
+    flex: 1;
+
     h3 {
       font-size: 0.95rem;
       font-weight: 700;
-      color: var(--color-text-primary);
+      color: var(--assistant-text);
       margin: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      line-height: 1.35;
     }
     
     .status-label {
       font-size: 0.75rem;
-      color: var(--color-text-secondary);
+      color: var(--assistant-text-muted);
       font-weight: 500;
     }
   }
@@ -151,15 +177,15 @@
 .close-btn-header {
   background: transparent;
   border: none;
-  color: var(--color-text-secondary);
+  color: var(--assistant-text-muted);
   cursor: pointer;
   padding: 4px;
   border-radius: 50%;
-  transition: all var(--transition-base);
+  transition: all var(--assistant-transition);
   
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--color-text-primary);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--assistant-text);
   }
 }
 
@@ -170,7 +196,8 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background-image: radial-gradient(circle at top right, var(--color-accent-soft) 0%, transparent 40%);
+  background: var(--assistant-bg-muted);
+  background-image: radial-gradient(circle at top right, var(--assistant-accent-soft) 0%, transparent 45%);
 }
 
 .message-row {
@@ -185,25 +212,32 @@
 
 .message-bubble {
   max-width: 85%;
+  min-width: 0;
   padding: 12px 16px;
   border-radius: 18px 18px 18px 4px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--assistant-surface);
+  border: 1px solid var(--assistant-border);
   position: relative;
+  color: var(--assistant-text);
+  overflow-wrap: anywhere;
+  word-break: break-word;
   
   p {
     margin: 0;
     font-size: 0.9rem;
-    line-height: 1.5;
+    line-height: 1.6;
+    color: inherit;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
   
   &.assistant-bubble {
-    background: var(--color-bg-secondary);
-    border-color: var(--color-accent);
+    background: var(--assistant-bg-muted);
+    border-color: rgba(29, 43, 83, 0.55);
   }
   
   .user & {
-    background: var(--color-accent);
+    background: linear-gradient(145deg, var(--assistant-accent) 0%, var(--assistant-accent-strong) 100%);
     color: #FFFFFF;
     border: none;
     border-radius: 18px 18px 4px 18px;
@@ -219,13 +253,13 @@
     }
     
     &.answer p {
-      color: var(--color-accent);
+      color: var(--assistant-text);
       font-weight: 700;
       font-size: 0.95rem;
     }
     
     &.explanation p {
-      color: var(--color-text-primary);
+      color: var(--assistant-text);
       opacity: 0.9;
     }
   }
@@ -233,18 +267,21 @@
   .action-list {
     margin-top: 12px;
     padding-top: 12px;
-    border-top: 1px dashed var(--color-border);
+    border-top: 1px dashed var(--assistant-border);
     display: flex;
     flex-direction: column;
     gap: 8px;
     
     p {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 8px;
-      color: var(--color-accent);
+      color: #cbd5e1;
       font-weight: 600;
       font-size: 0.85rem;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
   }
 }
@@ -263,27 +300,51 @@
 
 .chat-footer {
   padding: 16px;
-  border-top: 1px solid var(--color-border);
-  background: var(--color-surface);
+  border-top: 1px solid var(--assistant-border);
+  background: var(--assistant-bg);
 }
 
 .input-wrapper {
   position: relative;
   
   .form-input {
-    padding-right: 48px;
+    /* Reserve space on the inline-end side for send button */
+    padding-inline-end: 48px;
+    padding-inline-start: 16px;
     height: 48px;
     border-radius: 24px;
     font-size: 0.9rem;
+    background: var(--assistant-surface);
+    border: 1px solid var(--assistant-border);
+    color: var(--assistant-text);
+
+    &::placeholder {
+      color: var(--assistant-text-muted);
+      opacity: 0.65;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--assistant-accent-strong);
+      box-shadow: 0 0 0 3px var(--assistant-accent-soft);
+    }
+  }
+
+  /* In RTL the send chip must sit on the visual start-side so glyphs aren’t clipped */
+  .assistant-container.rtl & {
+    .form-input {
+      padding-inline-end: 16px;
+      padding-inline-start: 48px;
+    }
   }
   
   .send-btn {
     position: absolute;
-    right: 4px;
+    inset-inline-end: 4px;
     top: 4px;
     width: 40px;
     height: 40px;
-    background: var(--color-accent);
+    background: linear-gradient(145deg, var(--assistant-accent) 0%, var(--assistant-accent-strong) 100%);
     color: #FFFFFF;
     border: none;
     border-radius: 50%;
@@ -291,40 +352,49 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all var(--transition-base);
+    transition: all var(--assistant-transition);
     
     &:disabled {
-      background: var(--color-border);
+      background: #334155;
       cursor: not-allowed;
       opacity: 0.5;
     }
     
     &:hover:not(:disabled) {
       transform: scale(1.05);
-      background: var(--color-cta-hover);
+      filter: brightness(1.08);
     }
   }
 }
 
 .read-only-footer {
   padding: 12px 16px;
-  background: var(--color-bg-primary);
-  border-top: 1px solid var(--color-border);
+  background: var(--assistant-bg);
+  border-top: 1px solid var(--assistant-border);
   
   .info-pill {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
     padding: 8px 12px;
-    background: var(--color-accent-soft);
-    border-radius: var(--radius-md);
-    color: var(--color-accent);
-    
+    background: var(--assistant-accent-soft);
+    border-radius: 12px;
+    color: var(--assistant-text);
+    min-width: 0;
+
+    svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
     p {
       margin: 0;
       font-size: 0.75rem;
       font-weight: 600;
       line-height: 1.4;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      min-width: 0;
     }
   }
 }
