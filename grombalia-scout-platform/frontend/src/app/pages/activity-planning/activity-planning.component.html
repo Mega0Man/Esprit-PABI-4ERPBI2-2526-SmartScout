@@ -1,0 +1,64 @@
+<div class="page-wrapper">
+  <app-navbar [role]="'unit-leader'"></app-navbar>
+
+  <main class="container">
+    <header class="page-header">
+      <div class="tag">Planning</div>
+      <h1 class="page-title">Activity <span class="accent">Planning</span></h1>
+      <p class="page-subtitle">Outil intelligent d'aide à la décision pour vos sorties.</p>
+    </header>
+
+    <div class="planning-card dashboard-card">
+      <div class="form-section">
+        <div class="form-group">
+          <label class="section-label">Choose a Group</label>
+          <div class="select-wrapper">
+            <select [(ngModel)]="selectedGroup" class="form-input">
+              <option value="">Sélectionnez une unité...</option>
+              <option value="louveteaux">Louveteaux (Cubs)</option>
+              <option value="eclaireurs">Éclaireurs (Scouts)</option>
+              <option value="pionniers">Pionniers (Rovers)</option>
+            </select>
+            <div class="select-arrow">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-cta btn-full" (click)="runEstimation()" [disabled]="!selectedGroup || loading">
+          <svg *ngIf="!loading" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.364-6.364l-.707-.707M6.364 18.364l-.707.707M18.364 18.364l-.707.707M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/>
+          </svg>
+          <span *ngIf="!loading">Run Estimation</span>
+          <span *ngIf="loading">Calcul en cours...</span>
+        </button>
+      </div>
+
+      <div class="result-section animate-fade-in" *ngIf="result">
+        <div class="divider"></div>
+        <div class="kpi-grid">
+          <app-kpi-badge label="Attendance" [value]="result.predicted_attendance"></app-kpi-badge>
+          <app-kpi-badge label="Confidence" [value]="result.confidence_score"></app-kpi-badge>
+        </div>
+        
+        <div class="equipment-list">
+          <label class="section-label">Recommended Equipment</label>
+          <ul>
+            <li *ngFor="let item of result.recommended_equipment">
+              <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              {{ item }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <footer class="planning-footer">
+      <p>GROUPE SCOUT GROMBALIA &bull; DATA-DRIVEN SCOUTING</p>
+    </footer>
+  </main>
+</div>

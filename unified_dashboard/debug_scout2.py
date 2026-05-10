@@ -1,76 +1,40 @@
-# api/main.py - FastAPI Model Serving
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-from typing import Optional, List, Dict
-import os
-from pathlib import Path
-import sys
+import os, sys, traceback
+sys.path.insert(0, r'C:\Users\mezen\Desktop\mlops\scout_forecast\scout_forecast')
 from dotenv import load_dotenv
+load_dotenv(r'C:\Users\mezen\Desktop\mlops\scout_forecast\scout_forecast\.env')
 
-load_dotenv()
-import warnings
-import numpy as np
-import pandas as pd
+import warnings, numpy as np, pandas as pd
 from sqlalchemy import create_engine
 from statsmodels.tsa.arima.model import ARIMA
-
 
 warnings.filterwarnings('ignore')
 np.random.seed(42)
 
 SYNTHETIC_SEASONS = 8
-MIN_TRAIN_ML = 10
-
-UNIT_NAMES = {
-    1: "الأشبال", 2: "الزهرات", 3: "الكشافة",
-    4: "المرشدات", 5: "الجوالة", 6: "الدليلات", 7: "Unit 7"
-}
-
-app = FastAPI(
-    title="Scout Forecast API",
-    description="MLOps-enabled API for Scout Participation Forecasting",
-    version="1.0.0"
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 DB_URL = os.getenv("DB_URL", "postgresql+psycopg2://postgres:12345678@127.0.0.1:5432/New_DWw")
-
-class ParticipationRequest(BaseModel):
-    unit_id: Optional[int] = Field(None, description="Unit ID (1-7). None for all units.")
-
-
+print("DB_URL:", DB_URL)
 
 def get_engine(db_url):
     return create_engine(db_url)
 
 def load_participation_data(engine):
-    # Try loading from database first, but fall back to project CSVs if it fails
     try:
         raw_conn = engine.raw_connection()
         try:
             df = pd.read_sql_query('SELECT * FROM "Fact_Participation_Activity";', raw_conn)
         finally:
             raw_conn.close()
-    except Exception:
-        # Silently fall back to CSV if DB fails
-        # Use resolved absolute path anchored to this file's real location:
-        # main.py is at: mlops/scout_forecast/scout_forecast/api/main.py
-        # CSV is at:     mlops/ML_Models/recommandation/fact-participation.csv
-        # 3 levels up from api/ → scout_forecast/ → scout_forecast(pkg) → mlops/
-        _api_dir = Path(__file__).resolve().parent
-        csv_path = (_api_dir / ".." / ".." / ".." / "ML_Models" / "recommandation" / "fact-participation.csv").resolve()
-        if csv_path.exists():
+        print("Loaded from DB")
+    except Exception as e:
+        print(f"DB failed ({e}), falling back to CSV...")
+        csv_path = os.path.join(os.path.dirname(__file__), "..", "..", "ML_Models", "recommandation", "fact-participation.csv")
+        print("CSV path:", os.path.abspath(csv_path))
+        if os.path.exists(csv_path):
             df = pd.read_csv(csv_path)
+            print("Loaded from CSV")
         else:
-            # Last resort: return empty structure to avoid crash
+            print("CSV NOT FOUND!")
             return pd.DataFrame(), pd.DataFrame(), []
 
     season_order = sorted(df['season'].unique())
@@ -90,8 +54,6 @@ def load_participation_data(engine):
                        nb_records=('id_fact_activity', 'count'))
                   .reset_index().sort_values('season_idx'))
     return unit_agg, global_agg, season_order
-
-
 
 def detect_incomplete(global_agg):
     median_rec = global_agg['nb_records'].median()
@@ -122,93 +84,41 @@ def generate_synthetic(unit_agg, season_order, n_extra, target_col):
     combined = combined.sort_values(['id_unit', 'season_idx']).reset_index(drop=True)
     return combined, all_seasons
 
-def find_best_arima(ts_values):
-    best_aic, best_order = np.inf, (1, 1, 1)
-    for p in range(0, 3):
-        for d in range(0, 2):
-            for q in range(0, 3):
-                try:
-                    fit = ARIMA(ts_values, order=(p, d, q)).fit()
-                    if fit.aic < best_aic:
-                        best_aic, best_order = fit.aic, (p, d, q)
-                except:
-                    continue
-    return best_order, best_aic
-
-def predict_participation(unit_id=None):
+try:
+    print("\n--- Running predict_participation() ---")
     engine = get_engine(DB_URL)
     unit_agg, global_agg, real_seasons = load_participation_data(engine)
     engine.dispose()
+    print("real_seasons:", real_seasons)
+    print("unit_agg empty?", unit_agg.empty)
+    print("global_agg empty?", global_agg.empty)
 
     incomplete = detect_incomplete(global_agg)
+    print("incomplete:", incomplete)
+
     data, all_seasons = generate_synthetic(unit_agg, real_seasons, SYNTHETIC_SEASONS, 'nb_participants')
+    print("all_seasons:", all_seasons)
 
     working = data.copy()
-    if unit_id:
-        working = working[working['id_unit'] == int(unit_id)]
-
     complete = [s for s in real_seasons if s != incomplete]
     ts = working[working['season'].isin(complete)].groupby('season_idx')['nb_participants'].sum().sort_index()
+    print("ts length:", len(ts), "values:", ts.values)
 
-    best_order, best_aic = find_best_arima(ts.values)
-    if best_order == (0, 1, 0):
-        best_order = (1, 1, 0)
-
+    # ARIMA
+    best_order = (1, 1, 1)
     fit = ARIMA(ts.values, order=best_order).fit()
     forecast = float(fit.forecast(1)[0])
+    print("FORECAST:", forecast)
 
     history = {}
     for s in complete:
         val = working[working['season'] == s]['nb_participants'].sum()
         history[s] = int(val)
-
     last_val = list(history.values())[-1] if history else 1
     delta = round(((forecast - last_val) / (last_val + 1e-8)) * 100, 1)
-
     parts = real_seasons[-1].split('/')
     next_season = f"{int(parts[0])+1}/{int(parts[1])+1}"
+    print("RESULT:", {"next_season": next_season, "forecast": round(forecast), "delta_percent": delta})
 
-    label = UNIT_NAMES.get(int(unit_id), f"Unit {unit_id}") if unit_id else "All Units"
-
-    return {
-        "next_season": next_season,
-        "forecast": round(forecast),
-        "delta_percent": delta,
-        "best_arima_order": str(best_order),
-        "aic": round(best_aic, 2),
-        "incomplete_season": incomplete,
-        "history": {k: int(v) for k, v in history.items()},
-        "unit_id": label,
-    }
-
-
-
-@app.get("/")
-def root():
-    return {"message": "Scout Forecast API", "version": "1.0.0", "status": "running"}
-
-@app.get("/health")
-def health():
-    return {"status": "healthy"}
-
-@app.post("/predict/participation")
-def predict_participation_endpoint(req: ParticipationRequest):
-    try:
-        result = predict_participation(unit_id=req.unit_id)
-        return {"status": "success", "model": "participation_forecast", "result": result}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-
-@app.post("/predict")
-def predict_all(req: ParticipationRequest):
-    try:
-        result = predict_participation(unit_id=req.unit_id)
-        return {"status": "success", "result": result}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+except Exception:
+    traceback.print_exc()

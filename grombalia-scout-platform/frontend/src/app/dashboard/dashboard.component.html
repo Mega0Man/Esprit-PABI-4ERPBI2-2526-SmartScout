@@ -1,51 +1,52 @@
-<div class="dashboard-container" [ngStyle]="{'background': 'linear-gradient(135deg, ' + roleConfig?.gradientFrom + ' 0%, ' + roleConfig?.gradientTo + ' 100%)'}">
-  <nav class="navbar">
-    <div class="nav-left">
-      <div class="nav-logo">🌿</div>
-      <div class="nav-title">
-        <h2>{{ getTranslation('app_name') }}</h2>
-        <p>{{ getTranslation(role) }} {{ getTranslation('dashboard') }}</p>
-      </div>
-    </div>
-    <div class="nav-right">
-      <div class="lang-switcher" *ngIf="currentLang$ | async as lang">
-        <button (click)="setLang('fr')" [class.active]="lang === 'fr'">FR</button>
-        <button (click)="setLang('en')" [class.active]="lang === 'en'">EN</button>
-        <button (click)="setLang('ar')" [class.active]="lang === 'ar'">AR</button>
-      </div>
-      <div class="ml-buttons">
-        <button *ngIf="role === 'group_leader'" class="ml-nav-btn" (click)="openModel('forecast')">📊 {{ getTranslation('scout_forecast') }}</button>
-        <button *ngIf="role === 'group_leader'" class="ml-nav-btn" (click)="openModel('classification')">🏷️ {{ getTranslation('classification') }}</button>
-        <button *ngIf="role === 'treasurer'" class="ml-nav-btn" (click)="openModel('anomaly')">⚠️ {{ getTranslation('anomaly_detection') }}</button>
-        <button *ngIf="role === 'unit_leader'" class="ml-nav-btn" (click)="openModel('recommendation')">🎯 {{ getTranslation('recommendation') }}</button>
-      </div>
-      <span class="user-info">{{ getTranslation('welcome') }}, {{ currentUser?.username }}</span>
-      <button class="logout-btn" (click)="logout()">{{ getTranslation('logout') }}</button>
-    </div>
-  </nav>
-  <main class="dashboard-content">
-    <div class="page-header-with-audio" *ngIf="currentLang$ | async as lang">
-      <div class="header-titles">
-        <h2>{{ getTranslation(role) }} {{ getTranslation('overview') }}</h2>
-        <p>{{ getTranslation('scout_pilot_space') }}</p>
-      </div>
-      <app-audio-button 
-        [text]="getAudioText(lang)" 
-        [lang]="lang">
-      </app-audio-button>
-    </div>
+<div class="dashboard-page">
+  <app-navbar [role]="currentThemeRole"></app-navbar>
 
-    <section class="dashboard-section">
-      <div class="section-header">
-        <h3>📊 {{ getTranslation('power_bi_reports') }}</h3>
+  <main class="container">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-main">
+        <div class="header-titles">
+          <h1 class="page-title">{{ getTranslation(role) }} {{ getTranslation('overview') }}</h1>
+          <p class="page-subtitle">{{ getTranslation('scout_pilot_space') }}</p>
+        </div>
+        
+        <div class="header-actions" *ngIf="currentLang$ | async as lang">
+          <app-audio-button 
+            [text]="getAudioText(lang)" 
+            [lang]="lang">
+          </app-audio-button>
+        </div>
       </div>
-      <div class="card powerbi-card">
-        <iframe *ngIf="roleConfig?.powerBIUrl" [src]="roleConfig?.powerBIUrl" class="powerbi-iframe" frameborder="0" allowfullscreen="true"></iframe>
+    </header>
+
+    <!-- Main Content Section -->
+    <section class="dashboard-section">
+      <div class="section-label-wrapper">
+        <span class="section-label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+            <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+          </svg>
+          {{ getTranslation('power_bi_reports') }}
+        </span>
+      </div>
+
+      <div class="dashboard-card powerbi-container">
+        <div class="powerbi-wrapper" *ngIf="roleConfig?.powerBIUrl">
+          <iframe [src]="roleConfig?.powerBIUrl" class="powerbi-iframe" frameborder="0" allowfullscreen="true"></iframe>
+        </div>
+
+        <!-- Placeholder if no URL -->
         <div *ngIf="!roleConfig?.powerBIUrl" class="powerbi-placeholder">
-          <div class="placeholder-icon">📈</div>
-          <h4>{{ getTranslation(role) }} {{ getTranslation('dashboard') }}</h4>
+          <div class="placeholder-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 20V10"></path>
+              <path d="M18 20V4"></path>
+              <path d="M6 20v-4"></path>
+            </svg>
+          </div>
+          <h3>{{ getTranslation(role) }} {{ getTranslation('dashboard') }}</h3>
           <p>{{ getTranslation('coming_soon') }}</p>
-          <p>{{ getTranslation('share_embed') }}</p>
         </div>
       </div>
     </section>

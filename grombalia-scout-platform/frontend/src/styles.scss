@@ -1,0 +1,19 @@
+/* src/styles.scss */
+@import 'styles/themes/variables';
+@import 'styles/themes/global';
+
+/* Additional global overrides if any */
+body {
+  overflow-x: hidden;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  body {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; /* You might want to add an Arabic font here too */
+  }
+}

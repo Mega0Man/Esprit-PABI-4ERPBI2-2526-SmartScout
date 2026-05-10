@@ -6,12 +6,13 @@ import { ApiService } from '../services/api.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { LanguageService, Lang } from '../services/language.service';
 import { AudioService } from '../services/audio.service';
+import { ThemeService, Role } from '../core/services/theme.service';
 import { Subscription, filter } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   role!: string;
@@ -75,7 +76,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private apiService: ApiService,
     private sanitizer: DomSanitizer,
     private languageService: LanguageService,
-    private audioService: AudioService
+    private audioService: AudioService,
+    private themeService: ThemeService
   ) { }
 
   ngOnInit(): void {
@@ -96,6 +98,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.route.params.subscribe(params => {
       this.role = params['role'];
+      
+      // Map group_leader to group-leader etc.
+      const themeRole = this.role.replace('_', '-') as Role;
+      this.themeService.applyTheme(themeRole);
+
       if (this.currentUser.role !== this.role) {
         this.router.navigate([`/dashboard/${this.currentUser.role}`]);
         return;
@@ -110,6 +117,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.classificationForm = this.fb.group({ age: [14, Validators.required], gender: ['male', Validators.required], unit: ['cubs', Validators.required], membership_years: [2, Validators.required] });
     this.anomalyForm = this.fb.group({ amount: [100, Validators.required], transaction_type: ['expense', Validators.required], category: ['supplies', Validators.required] });
     this.recommendationForm = this.fb.group({ scout_id: [1, Validators.required], activity_preferences: [''] });
+  }
+
+  get currentThemeRole(): Role {
+    return this.role.replace('_', '-') as Role;
   }
 
   ngOnDestroy(): void {

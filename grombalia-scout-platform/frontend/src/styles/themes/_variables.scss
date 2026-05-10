@@ -1,0 +1,61 @@
+/* src/styles/themes/_variables.scss */
+
+:root {
+  --font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --spacing-8: 8px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  
+  /* Shared Defaults */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --transition-base: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 🟢 CHEF D'UNITÉ (Unit Leader) */
+.theme-unit-leader {
+  --color-bg-primary: #0F2419;
+  --color-bg-secondary: #1A3A2A;
+  --color-text-primary: #D8F3DC;
+  --color-text-secondary: #95D5B2;
+  --color-accent: #52B788;
+  --color-accent-soft: rgba(82, 183, 136, 0.15);
+  --color-surface: #1B4332;
+  --color-border: rgba(82, 183, 136, 0.2);
+  --color-cta: #52B788;
+  --color-cta-hover: #74C69D;
+  --focus-ring: 0 0 0 3px rgba(82, 183, 136, 0.3);
+}
+
+/* 🟡 TRÉSORIER (Treasurer) */
+.theme-treasurer {
+  --color-bg-primary: #2C2115;
+  --color-bg-secondary: #3A2D1E;
+  --color-text-primary: #F5E6C8;
+  --color-text-secondary: #D4A853;
+  --color-accent: #C9A84C;
+  --color-accent-soft: rgba(201, 168, 76, 0.15);
+  --color-surface: #4A3728;
+  --color-border: rgba(201, 168, 76, 0.2);
+  --color-cta: #C9A84C;
+  --color-cta-hover: #D4A853;
+  --focus-ring: 0 0 0 3px rgba(201, 168, 76, 0.3);
+}
+
+/* 🔵 CHEF DE GROUPE (Group Leader) */
+.theme-group-leader {
+  --color-bg-primary: #071525;
+  --color-bg-secondary: #0F2744;
+  --color-text-primary: #DBEAFE;
+  --color-text-secondary: #93C5FD;
+  --color-accent: #3B82F6;
+  --color-accent-soft: rgba(59, 130, 246, 0.15);
+  --color-surface: #0D2137;
+  --color-border: rgba(59, 130, 246, 0.2);
+  --color-cta: #3B82F6;
+  --color-cta-hover: #60A5FA;
+  --focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}

@@ -2,43 +2,61 @@
 <div class="assistant-container" [class.open]="isOpen" [dir]="isRtl() ? 'rtl' : 'ltr'">
   
   <!-- Floating Button -->
-  <button class="assistant-trigger" (click)="toggleChat()" [style.background]="getThemeColor()">
-    <span *ngIf="!isOpen">💬</span>
-    <span *ngIf="isOpen">✕</span>
+  <button class="assistant-trigger" (click)="toggleChat()">
+    <div class="trigger-icons" [class.is-open]="isOpen">
+      <svg class="chat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-13.5 8.38 8.38 0 0 1 3.8.9L21 3z"></path>
+      </svg>
+      <svg class="close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </div>
   </button>
 
   <!-- Chat Window -->
   <div class="assistant-window" *ngIf="isOpen">
-    <div class="assistant-header" [style.background]="getThemeColor() + '1A'">
+    <div class="assistant-header">
       <div class="header-info">
-        <span class="status-dot" [style.background]="getThemeColor()" [style.boxShadow]="'0 0 8px ' + getThemeColor()"></span>
-        <h3>Scout Assistant</h3>
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+        </div>
+        <div class="header-text">
+          <h3>Scout Assistant</h3>
+          <span class="status-label">En ligne</span>
+        </div>
       </div>
-      <button class="close-btn" (click)="isOpen = false">✕</button>
+      <button class="close-btn-header" (click)="isOpen = false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     </div>
 
-    <div class="chat-body" #scrollContainer [style.backgroundImage]="'radial-gradient(circle at 50% 50%, ' + getThemeColor() + '0A 0%, transparent 100%)'">
-      <div *ngFor="let msg of messages" class="message" [class.user]="msg.role === 'user'">
-        <div class="message-bubble" 
-             [class.user-bubble]="msg.role === 'user'"
-             [style.background]="msg.role === 'user' ? getThemeColor() : ''">
+    <div class="chat-body" #scrollContainer>
+      <div *ngFor="let msg of messages" class="message-row" [class.user]="msg.role === 'user'">
+        <div class="message-bubble" [class.assistant-bubble]="msg.role === 'assistant'">
           
           <!-- User Message -->
           <p *ngIf="msg.role === 'user'">{{ msg.content.answer }}</p>
 
           <!-- Assistant Message -->
-          <div *ngIf="msg.role === 'assistant'" class="assistant-content" 
-               [style.borderColor]="getThemeColor() + '66'"
-               [style.backgroundColor]="getThemeColor() + '1A'">
+          <div *ngIf="msg.role === 'assistant'" class="assistant-content">
             <div class="section answer">
-              <p [style.color]="getThemeColor()" style="font-weight: 600;">✅ {{ msg.content.answer }}</p>
+              <p>{{ msg.content.answer }}</p>
             </div>
             <div class="section explanation" *ngIf="msg.content.explanation">
-              <p>💡 {{ msg.content.explanation }}</p>
+              <p>{{ msg.content.explanation }}</p>
             </div>
             <div class="section action" *ngIf="msg.content.action">
               <div class="action-list">
-                <p *ngFor="let line of msg.content.action.split('\n')" [style.color]="getThemeColor()">🎯 {{ line }}</p>
+                <p *ngFor="let line of msg.content.action.split('\n')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  {{ line }}
+                </p>
               </div>
             </div>
           </div>
@@ -49,20 +67,33 @@
     </div>
 
     <div class="chat-footer" *ngIf="!isLoginPage()">
-      <input 
-        type="text" 
-        [(ngModel)]="userInput" 
-        (keyup.enter)="sendMessage()"
-        [placeholder]="isRtl() ? 'اكتب رسالتك...' : (getTranslation('home') === 'Accueil' ? 'Écrivez votre message...' : 'Type your message...')"
-      >
-      <button (click)="sendMessage()" [style.background]="getThemeColor()">
-        <span class="send-icon">➤</span>
-      </button>
+      <div class="input-wrapper">
+        <input 
+          type="text" 
+          [(ngModel)]="userInput" 
+          (keyup.enter)="sendMessage()"
+          [placeholder]="isRtl() ? 'اكتب رسالتك...' : (getTranslation('home') === 'Accueil' ? 'Écrivez votre message...' : 'Type your message...')"
+          class="form-input"
+        >
+        <button class="send-btn" (click)="sendMessage()" [disabled]="!userInput.trim()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
     </div>
 
     <!-- Read-only Info for Login Pages -->
-    <div class="read-only-footer" *ngIf="isLoginPage()" [style.backgroundColor]="getThemeColor() + '10'">
-      <p [style.color]="getThemeColor()">ℹ️ {{ isRtl() ? 'المساعد في وضع القراءة فقط في صفحة تسجيل الدخول' : (getTranslation('home') === 'Accueil' ? 'Assistant en mode lecture seule sur la page de connexion' : 'Assistant is in read-only mode on login pages') }}</p>
+    <div class="read-only-footer" *ngIf="isLoginPage()">
+      <div class="info-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <p>{{ isRtl() ? 'المساعد في وضع القراءة فقط في صفحة تسجيل الدخول' : (getTranslation('home') === 'Accueil' ? 'Assistant en mode lecture seule' : 'Assistant is in read-only mode') }}</p>
+      </div>
     </div>
   </div>
 </div>

@@ -5,11 +5,12 @@ import { AuthService } from '../services/auth.service';
 import { FaceRecognitionComponent } from '../face-recognition/face-recognition.component';
 import { LanguageService, Lang } from '../services/language.service';
 import { AudioService } from '../services/audio.service';
+import { ThemeService, Role } from '../core/services/theme.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
   @ViewChild(FaceRecognitionComponent) faceRecognitionComponent?: FaceRecognitionComponent;
@@ -65,7 +66,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private languageService: LanguageService,
-    private audioService: AudioService
+    private audioService: AudioService,
+    private themeService: ThemeService
   ) { }
 
   getTranslation(key: string): string {
@@ -86,7 +88,11 @@ export class LoginComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.role = params['role'];
       this.roleConfig = this.roleConfigs[this.role as keyof typeof this.roleConfigs];
-      if (!this.roleConfig) {
+      
+      if (this.roleConfig) {
+        const themeRole = this.role.replace('_', '-') as Role;
+        this.themeService.applyTheme(themeRole);
+      } else {
         this.router.navigate(['/']);
       }
     });

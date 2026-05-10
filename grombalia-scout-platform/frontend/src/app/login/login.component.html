@@ -1,159 +1,191 @@
-<div class="login-container" [ngStyle]="{'background': 'linear-gradient(135deg, ' + roleConfig?.gradientFrom + ' 0%, ' + roleConfig?.gradientTo + ' 100%)'}">
-  <div class="top-bar">
-    <button class="back-button" (click)="goHome()">
-      ← {{ getTranslation('home') }}
-    </button>
-    <div class="top-bar-right" *ngIf="currentLang$ | async as lang">
-      <app-audio-button [text]="getAudioText(lang)" [lang]="lang"></app-audio-button>
-      <div class="lang-switcher">
-        <button (click)="setLang('fr')" [class.active]="lang === 'fr'">FR</button>
-        <button (click)="setLang('en')" [class.active]="lang === 'en'">EN</button>
-        <button (click)="setLang('ar')" [class.active]="lang === 'ar'">AR</button>
+<div class="login-page">
+  <!-- Left Side: Visual Branding (55%) -->
+  <div class="login-visual">
+    <div class="visual-overlay"></div>
+    <div class="visual-content">
+      <div class="branding-bottom">
+        <h1 class="scout-title">GROUPE SCOUT GROMBALIA</h1>
+        <p class="scout-motto">Unity · Service · Brotherhood</p>
       </div>
     </div>
   </div>
 
-  <div class="login-box">
-    <div class="login-icon">{{ roleConfig?.icon }}</div>
-    <h1>{{ getTranslation(role) }}</h1>
-    <p class="subtitle-login">{{ getTranslation('login_to_dashboard') }}</p>
-
-    <div class="tabs">
-      <button class="tab-btn" [class.active]="activeTab === 'password'" (click)="activeTab = 'password'">
-        🔐 {{ getTranslation('password_tab') }}
+  <!-- Right Side: Login Content (45%) -->
+  <div class="login-content">
+    <!-- Top Actions -->
+    <div class="login-top-actions">
+      <button class="btn-ghost" (click)="goHome()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        {{ getTranslation('home') }}
       </button>
-      <button class="tab-btn" [class.active]="activeTab === 'face'" (click)="activeTab = 'face'">
-        👤 {{ getTranslation('face_tab') }}
-      </button>
-    </div>
 
-    <div *ngIf="activeTab === 'password'">
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <label>{{ getTranslation('username') }}</label>
-          <input type="text" formControlName="username" [placeholder]="getTranslation('enter_username')" required>
+      <div class="top-bar-right" *ngIf="currentLang$ | async as lang">
+        <app-audio-button [text]="getAudioText(lang)" [lang]="lang"></app-audio-button>
+        <div class="lang-switcher">
+          <button (click)="setLang('fr')" [class.active]="lang === 'fr'">FR</button>
+          <button (click)="setLang('en')" [class.active]="lang === 'en'">EN</button>
+          <button (click)="setLang('ar')" [class.active]="lang === 'ar'">AR</button>
         </div>
-        <div class="form-group">
-          <label>{{ getTranslation('password') }}</label>
-          <input type="password" formControlName="password" [placeholder]="getTranslation('enter_password')" required>
-        </div>
-        <div *ngIf="error" class="error-message">{{ error }}</div>
-        <button type="submit" [disabled]="loading" [style.background]="roleConfig?.color">
-          {{ loading ? getTranslation('signing_in') : getTranslation('sign_in') }}
-        </button>
-        
-        <div style="margin-top: 12px; display: flex; align-items: center; gap: 10px;">
-          <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
-          <span style="font-size: 12px; color: rgba(255,255,255,0.4);">{{ getTranslation('or') }}</span>
-          <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
-        </div>
-
-        <button type="button" class="face-login-shortcut" (click)="activeTab = 'face'; faceMode = 'login'">
-          👤 {{ getTranslation('login_face_id') }}
-        </button>
-      </form>
-      <div style="text-align: center; margin-top: 16px;">
-        <p style="font-size: 13px; color: rgba(255,255,255,0.6);">
-          {{ getTranslation('no_account') }}
-          <a href="javascript:void(0)" (click)="activeTab = 'face'; faceMode = 'register'" style="color: #5cb885; text-decoration: none; font-weight: 600;">{{ getTranslation('register_here') }}</a>
-        </p>
-      </div>
-      <div class="demo-credentials">
-        <p>{{ getTranslation('demo_creds') }}</p>
-        <code>{{ role }} / password</code>
       </div>
     </div>
 
-    <div *ngIf="activeTab === 'face'">
-      <div *ngIf="registrationMessage" class="success-message" style="margin-bottom:16px; background: rgba(45,140,89,0.2); border:1px solid rgba(45,140,89,0.5); color:#5cb885; padding:12px 16px; border-radius:10px; font-size:14px; text-align:center;">
-        {{ registrationMessage }}
-      </div>
-      
-      <div class="face-tabs">
-        <button class="face-tab-btn" [class.active]="faceMode === 'login'" (click)="faceMode = 'login'">
-          {{ getTranslation('login') }}
-        </button>
-        <button class="face-tab-btn" [class.active]="faceMode === 'register'" (click)="faceMode = 'register'">
-          {{ getTranslation('register_new_face') }}
-        </button>
-      </div>
-
-      <div *ngIf="faceMode === 'login'" style="text-align: center; margin-bottom: 12px;">
-        <p style="font-size: 12px; color: rgba(255,255,255,0.5);">
-          {{ getTranslation('face_login_note') }}
-        </p>
-      </div>
-
-      <div *ngIf="faceMode === 'register'" class="registration-form" style="margin-top:16px;">
-        <div class="form-group">
-          <label>{{ getTranslation('national_id') }}</label>
-          <input type="text" [(ngModel)]="registerId" [placeholder]="getTranslation('enter_id')" maxlength="8">
-        </div>
-        <div class="form-group">
-          <label>{{ getTranslation('username') }}</label>
-          <input type="text" [(ngModel)]="registerUsername" [placeholder]="getTranslation('enter_username')">
-        </div>
-        <div class="form-group">
-          <label>{{ getTranslation('password') }}</label>
-          <input type="password" [(ngModel)]="registerPassword" [placeholder]="getTranslation('create_password')">
+    <div class="login-card-container">
+      <div class="login-card">
+        <!-- Role Icon -->
+        <div class="role-icon-wrapper">
+          <div class="role-icon" [ngSwitch]="role">
+            <!-- Group Leader Icon -->
+            <svg *ngSwitchCase="'group_leader'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <!-- Treasurer Icon -->
+            <svg *ngSwitchCase="'treasurer'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+            <!-- Unit Leader Icon -->
+            <svg *ngSwitchCase="'unit_leader'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
         </div>
 
-        <div class="face-toggle-section" style="margin-bottom: 20px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
-          <div class="toggle-header" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;" (click)="toggleFaceCapture()">
-            <span style="font-size: 14px; font-weight: 500; color: white;">
-              👤 {{ getTranslation('enable_face') }}
-            </span>
-            <div class="toggle-switch" [class.active]="enableFaceCapture">
-              <div class="toggle-knob"></div>
+        <h2 class="page-title">{{ getTranslation(role) }}</h2>
+        <p class="page-subtitle">{{ getTranslation('login_to_dashboard') }}</p>
+
+        <!-- Tabs -->
+        <div class="login-tabs">
+          <button class="tab-btn" [class.active]="activeTab === 'password'" (click)="activeTab = 'password'">
+            {{ getTranslation('password_tab') }}
+          </button>
+          <button class="tab-btn" [class.active]="activeTab === 'face'" (click)="activeTab = 'face'">
+            {{ getTranslation('face_tab') }}
+          </button>
+        </div>
+
+        <!-- Password Login Form -->
+        <div *ngIf="activeTab === 'password'" class="tab-content animate-fade-in">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="form-field">
+              <label class="section-label">{{ getTranslation('username') }}</label>
+              <input type="text" formControlName="username" [placeholder]="getTranslation('enter_username')" class="form-input" required>
+            </div>
+            <div class="form-field">
+              <label class="section-label">{{ getTranslation('password') }}</label>
+              <input type="password" formControlName="password" [placeholder]="getTranslation('enter_password')" class="form-input" required>
+            </div>
+            
+            <div *ngIf="error" class="error-message">{{ error }}</div>
+            
+            <button type="submit" class="btn-cta btn-full" [disabled]="loading">
+              {{ loading ? getTranslation('signing_in') : getTranslation('sign_in') }}
+            </button>
+
+            <div class="divider">
+              <span>{{ getTranslation('or') }}</span>
+            </div>
+
+            <button type="button" class="btn-ghost btn-full" (click)="activeTab = 'face'; faceMode = 'login'">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3"/>
+              </svg>
+              {{ getTranslation('login_face_id') }}
+            </button>
+          </form>
+
+          <div class="login-footer">
+            <p>{{ getTranslation('no_account') }} 
+              <a (click)="activeTab = 'face'; faceMode = 'register'">{{ getTranslation('register_here') }}</a>
+            </p>
+          </div>
+
+          <div class="demo-credentials">
+            <p>{{ getTranslation('demo_creds') }}</p>
+            <code>{{ role }} / password</code>
+          </div>
+        </div>
+
+        <!-- Face ID Content -->
+        <div *ngIf="activeTab === 'face'" class="tab-content animate-fade-in">
+          <div *ngIf="registrationMessage" class="success-banner">
+            {{ registrationMessage }}
+          </div>
+          
+          <div class="face-mode-tabs">
+            <button class="mode-btn" [class.active]="faceMode === 'login'" (click)="faceMode = 'login'">
+              {{ getTranslation('login') }}
+            </button>
+            <button class="mode-btn" [class.active]="faceMode === 'register'" (click)="faceMode = 'register'">
+              {{ getTranslation('register_new_face') }}
+            </button>
+          </div>
+
+          <div *ngIf="faceMode === 'login'" class="face-info">
+            <p>{{ getTranslation('face_login_note') }}</p>
+          </div>
+
+          <!-- Registration Form for Face ID -->
+          <div *ngIf="faceMode === 'register'" class="registration-form">
+            <div class="form-field">
+              <label class="section-label">{{ getTranslation('national_id') }}</label>
+              <input type="text" [(ngModel)]="registerId" [placeholder]="getTranslation('enter_id')" maxlength="8" class="form-input">
+            </div>
+            <div class="form-field">
+              <label class="section-label">{{ getTranslation('username') }}</label>
+              <input type="text" [(ngModel)]="registerUsername" [placeholder]="getTranslation('enter_username')" class="form-input">
+            </div>
+            <div class="form-field">
+              <label class="section-label">{{ getTranslation('password') }}</label>
+              <input type="password" [(ngModel)]="registerPassword" [placeholder]="getTranslation('create_password')" class="form-input">
+            </div>
+
+            <div class="face-toggle-card">
+              <div class="toggle-row" (click)="toggleFaceCapture()">
+                <span class="toggle-label">{{ getTranslation('enable_face') }}</span>
+                <div class="toggle-switch" [class.active]="enableFaceCapture">
+                  <div class="toggle-knob"></div>
+                </div>
+              </div>
+              <p class="toggle-hint">{{ getTranslation('face_hint') }}</p>
             </div>
           </div>
-          <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 8px; line-height: 1.4;">
-            {{ getTranslation('face_hint') }}
-          </p>
-        </div>
-        
-        <div *ngIf="enableFaceCapture && !currentDescriptor" class="capture-hint" style="color: #f0d78c; font-size: 13px; margin-bottom: 12px; text-align: center;">
-          📸 {{ getTranslation('capture_face') }}
-        </div>
-        <div *ngIf="enableFaceCapture && currentDescriptor" class="capture-hint" style="color: #5cb885; font-size: 13px; margin-bottom: 12px; text-align: center;">
-          ✅ {{ getTranslation('face_captured_success') }}
-        </div>
-      </div>
 
-      <div class="face-recognition-wrapper" style="position: relative;" *ngIf="faceMode === 'login' || (faceMode === 'register' && enableFaceCapture)">
-        <app-face-recognition 
-          [mode]="faceMode"
-          [username]="registerUsername"
-          [disabled]="registerId.length !== 8 || !registerUsername || !registerPassword"
-          (faceDetected)="onFaceDetected($event)"
-          (faceRecognized)="onFaceRecognized($event)"
-          (faceRegistered)="onFaceRegistered($event)"
-          (error)="onFaceError($event)"
-        ></app-face-recognition>
+          <!-- Recognition Component -->
+          <div class="face-recognition-container" *ngIf="faceMode === 'login' || (faceMode === 'register' && enableFaceCapture)">
+            <app-face-recognition 
+              [mode]="faceMode"
+              [username]="registerUsername"
+              [disabled]="registerId.length !== 8 || !registerUsername || !registerPassword"
+              (faceDetected)="onFaceDetected($event)"
+              (faceRecognized)="onFaceRecognized($event)"
+              (faceRegistered)="onFaceRegistered($event)"
+              (error)="onFaceError($event)"
+            ></app-face-recognition>
 
-        <!-- Loading overlay -->
-        <div *ngIf="loading" class="face-loading-overlay">
-          <div class="spinner"></div>
-          <p>{{ getTranslation('logging_in') }}</p>
+            <div *ngIf="loading" class="loading-overlay">
+              <div class="spinner"></div>
+              <p>{{ getTranslation('logging_in') }}</p>
+            </div>
+          </div>
+
+          <!-- Register Action -->
+          <div *ngIf="faceMode === 'register'" class="face-actions">
+            <button class="btn-cta btn-full" 
+              [disabled]="loading || registerId.length !== 8 || !registerUsername || !registerPassword || (enableFaceCapture && !currentDescriptor)"
+              (click)="onSignupSubmit()">
+              {{ loading ? getTranslation('creating_account') : getTranslation('complete_reg') }}
+            </button>
+          </div>
+          
+          <div *ngIf="faceErrorMessage" class="error-message">{{ faceErrorMessage }}</div>
         </div>
-      </div>
 
-      <div *ngIf="faceMode === 'register'" class="register-actions" style="margin-top: 20px;">
-        <button 
-          class="submit-btn" 
-          [disabled]="loading || registerId.length !== 8 || !registerUsername || !registerPassword || (enableFaceCapture && !currentDescriptor)"
-          (click)="onSignupSubmit()"
-          [style.background]="roleConfig?.color"
-          style="width: 100%; padding: 16px; border-radius: 12px; border: none; color: white; font-weight: 600; cursor: pointer;"
-        >
-          {{ loading ? getTranslation('creating_account') : getTranslation('complete_reg') }}
-        </button>
-        <p *ngIf="!enableFaceCapture" style="text-align: center; font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 12px;">
-          {{ getTranslation('face_skipped') }}
-        </p>
       </div>
-      
-      <div *ngIf="faceErrorMessage" class="error-message" style="margin-top:16px;">{{ faceErrorMessage }}</div>
     </div>
   </div>
 </div>

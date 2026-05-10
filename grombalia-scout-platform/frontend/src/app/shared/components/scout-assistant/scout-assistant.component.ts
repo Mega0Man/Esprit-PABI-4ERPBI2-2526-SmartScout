@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-scout-assistant',
   templateUrl: './scout-assistant.component.html',
-  styleUrls: ['./scout-assistant.component.css']
+  styleUrls: ['./scout-assistant.component.scss']
 })
 export class ScoutAssistantComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;

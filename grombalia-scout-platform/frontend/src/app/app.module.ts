@@ -10,6 +10,11 @@ import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FaceRecognitionComponent } from './face-recognition/face-recognition.component';
 
+import { ActivityPlanningComponent } from './pages/activity-planning/activity-planning.component';
+import { AnomalyComponent } from './pages/anomaly/anomaly.component';
+import { ClassificationComponent } from './pages/classification/classification.component';
+import { ForecastComponent } from './pages/forecast/forecast.component';
+
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
@@ -18,7 +23,11 @@ import { SharedModule } from './shared/shared.module';
     HomeComponent,
     LoginComponent,
     DashboardComponent,
-    FaceRecognitionComponent
+    FaceRecognitionComponent,
+    ActivityPlanningComponent,
+    AnomalyComponent,
+    ClassificationComponent,
+    ForecastComponent
   ],
   imports: [
     BrowserModule,
