@@ -100,7 +100,7 @@ export class ScoutAssistantComponent implements OnInit, OnDestroy, AfterViewChec
     const url = this.router.url;
     if (url.includes('group_leader')) return '#2c7fb8'; // Blue for Group Leader
     if (url.includes('treasurer')) return '#d4af37';    // Gold/Yellow for Treasurer
-    if (url.includes('unit_leader')) return '#2d8c59';  // Green for Unit Leader
-    return '#22c55e'; // Default Scout Green
+    if (url.includes('unit_leader')) return '#DC2626';  // Red for Unit Leader
+    return '#EF4444'; // Default accent fallback
   }
 }

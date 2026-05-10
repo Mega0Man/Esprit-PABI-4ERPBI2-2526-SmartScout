@@ -58,10 +58,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     },
     unit_leader: {
       name: 'Unit Leader',
-      color: '#2d8c59',
-      lightColor: '#5cb885',
-      gradientFrom: '#1a523a',
-      gradientTo: '#0d4028',
+      color: '#DC2626',
+      lightColor: '#EF4444',
+      gradientFrom: '#991B1B',
+      gradientTo: '#7F1D1D',
       modules: ['Recommendation System'],
       powerBIUrl: 'https://app.powerbi.com/reportEmbed?reportId=b2aa5284-6c1f-4c5c-8293-17ba828f5148&autoAuth=true&ctid=604f1a96-cbe8-43f8-abbf-f8eaf5d85730&filterPaneEnabled=false&navContentPaneEnabled=false&chrome=false&language=en-US',
       grafanaUrl: 'http://localhost:3000/d/unit-leader-dashboard'

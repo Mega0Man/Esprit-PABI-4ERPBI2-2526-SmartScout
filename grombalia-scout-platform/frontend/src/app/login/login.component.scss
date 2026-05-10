@@ -2,22 +2,29 @@
 
 .login-page {
   display: flex;
+  height: 100vh;
   min-height: 100vh;
   background: var(--color-bg-primary);
-  overflow: hidden;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)), url('../../assets/scout-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow-y: auto;
+  overflow-x: hidden;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 /* Left Side: Visual Branding */
 .login-visual {
   flex: 0 0 55%;
   position: relative;
-  background-image: url('../../assets/scout-bg.jpg');
-  background-size: cover;
-  background-position: center;
+  min-height: 100vh;
+  background: transparent;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 64px;
+  padding: 40px;
   
   .visual-overlay {
     position: absolute;
@@ -35,6 +42,11 @@
     z-index: 2;
   }
 
+  .branding-bottom app-logo {
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
   .scout-title {
     font-size: 3.5rem;
     font-weight: 800;
@@ -45,7 +57,7 @@
   }
 
   .scout-motto {
-    font-size: 1.25rem;
+    font-size: 1rem;
     color: var(--color-text-secondary);
     font-weight: 500;
     letter-spacing: 0.05em;
@@ -58,17 +70,23 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 40px;
-  background: var(--color-bg-primary);
+  justify-content: flex-start;
+  padding: 68px 32px 24px;
+  background: rgba(10, 10, 10, 0.34);
+  backdrop-filter: blur(2px);
   position: relative;
+  height: 100vh;
+  max-height: 100vh;
   overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .login-top-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 64px;
+  margin-bottom: 16px;
 }
 
 .lang-switcher {
@@ -103,9 +121,9 @@
 }
 
 .login-card-container {
-  flex: 1;
+  flex: 0 0 auto;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   width: 100%;
 }
@@ -119,7 +137,7 @@
 .role-icon-wrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
 }
 
 .role-icon {
@@ -141,8 +159,8 @@
 .login-tabs {
   display: flex;
   gap: 12px;
-  margin: 32px 0;
-  padding: 6px;
+  margin: 14px 0 12px;
+  padding: 5px;
   background: var(--color-bg-secondary);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
@@ -174,7 +192,7 @@
 
 .form-field {
   text-align: left;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   
   .section-label {
     margin-bottom: 8px;
@@ -189,8 +207,8 @@
 .divider {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin: 24px 0;
+  gap: 12px;
+  margin: 12px 0;
   
   &::before, &::after {
     content: '';
@@ -209,7 +227,7 @@
 }
 
 .login-footer {
-  margin-top: 24px;
+  margin-top: 16px;
   font-size: 0.9rem;
   color: var(--color-text-secondary);
   
@@ -226,8 +244,8 @@
 }
 
 .demo-credentials {
-  margin-top: 32px;
-  padding: 16px;
+  margin-top: 12px;
+  padding: 12px;
   background: var(--color-bg-secondary);
   border-radius: var(--radius-md);
   border: 1px dashed var(--color-border);
@@ -250,7 +268,7 @@
 .face-mode-tabs {
   display: flex;
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
   
   .mode-btn {
     flex: 1;
@@ -272,8 +290,8 @@
 }
 
 .face-info {
-  margin-bottom: 24px;
-  padding: 12px;
+  margin-bottom: 12px;
+  padding: 10px;
   background: var(--color-accent-soft);
   border-radius: var(--radius-md);
   
@@ -285,8 +303,8 @@
 }
 
 .face-toggle-card {
-  margin-top: 24px;
-  padding: 16px;
+  margin-top: 12px;
+  padding: 12px;
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -340,7 +358,7 @@
 }
 
 .face-recognition-container {
-  margin: 24px 0;
+  margin: 12px 0;
   position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -395,7 +413,15 @@
   border-radius: var(--radius-md);
   font-size: 0.85rem;
   font-weight: 600;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
+}
+
+.primary-login-content {
+  display: block;
+}
+
+.secondary-login-content {
+  opacity: 0.95;
 }
 
 /* Animations */
@@ -415,10 +441,43 @@
   }
   
   .login-content {
-    padding: 24px;
+    padding: 28px 20px 20px;
+    overflow-y: auto;
+    background: rgba(10, 10, 10, 0.42);
   }
   
   .login-top-actions {
-    margin-bottom: 32px;
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-height: 860px) and (min-width: 993px) {
+  .login-content {
+    padding: 56px 24px 20px;
+  }
+
+  .login-top-actions {
+    margin-bottom: 14px;
+  }
+
+  .role-icon-wrapper {
+    margin-bottom: 10px;
+  }
+
+  .login-tabs {
+    margin: 14px 0 12px;
+  }
+
+  .form-field {
+    margin-bottom: 12px;
+  }
+
+  .divider {
+    margin: 12px 0;
+  }
+
+  .login-footer,
+  .demo-credentials {
+    margin-top: 12px;
   }
 }

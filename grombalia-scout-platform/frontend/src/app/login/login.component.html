@@ -4,7 +4,7 @@
     <div class="visual-overlay"></div>
     <div class="visual-content">
       <div class="branding-bottom">
-        <h1 class="scout-title">GROUPE SCOUT GROMBALIA</h1>
+        <app-logo [height]="72"></app-logo>
         <p class="scout-motto">Unity · Service · Brotherhood</p>
       </div>
     </div>
@@ -70,6 +70,7 @@
 
         <!-- Password Login Form -->
         <div *ngIf="activeTab === 'password'" class="tab-content animate-fade-in">
+          <div class="primary-login-content">
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
             <div class="form-field">
               <label class="section-label">{{ getTranslation('username') }}</label>
@@ -97,14 +98,15 @@
               {{ getTranslation('login_face_id') }}
             </button>
           </form>
+          </div>
 
-          <div class="login-footer">
+          <div class="secondary-login-content login-footer">
             <p>{{ getTranslation('no_account') }} 
               <a (click)="activeTab = 'face'; faceMode = 'register'">{{ getTranslation('register_here') }}</a>
             </p>
           </div>
 
-          <div class="demo-credentials">
+          <div class="secondary-login-content demo-credentials">
             <p>{{ getTranslation('demo_creds') }}</p>
             <code>{{ role }} / password</code>
           </div>

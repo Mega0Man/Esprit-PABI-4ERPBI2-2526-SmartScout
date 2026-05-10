@@ -112,16 +112,16 @@
       display: block;
       width: 10px;
       height: 10px;
-      background: #10b981;
+      background: var(--color-accent);
       border-radius: 50%;
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+      box-shadow: 0 0 0 4px var(--color-accent-soft);
       
       &::after {
         content: '';
         position: absolute;
         inset: -2px;
         border-radius: 50%;
-        border: 2px solid #10b981;
+        border: 2px solid var(--color-accent);
         animation: pulse 2s infinite;
       }
     }

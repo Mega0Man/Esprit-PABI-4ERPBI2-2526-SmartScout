@@ -67,6 +67,7 @@ export class LanguageService {
     'leadership': { fr: 'Leadership', en: 'Leadership', ar: 'قيادة' },
 
     // Additional home strings
+    'homepage.motto': { fr: 'UNITÉ • SERVICE • FRATERNITÉ', en: 'UNITY • SERVICE • BROTHERHOOD', ar: 'الوحدة • الخدمة • الأخوّة' },
     'choose_dashboard': { fr: 'CHOISISSEZ VOTRE TABLEAU DE BORD', en: 'CHOOSE YOUR DASHBOARD', ar: 'اختر لوحة القيادة الخاصة بك' },
     'select_role': { fr: 'Sélectionnez votre rôle pour accéder à votre espace', en: 'Select your role to access your dashboard', ar: 'اختر صفتك للوصول إلى لوحة التحكم الخاصة بك' },
     'scout_quote': { fr: 'Servir, aider, construire un monde meilleur.', en: 'To serve, to help, to build a better world.', ar: 'الخدمة، المساعدة، وبناء عالم أفضل.' },

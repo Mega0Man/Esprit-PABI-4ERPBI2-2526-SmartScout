@@ -30,19 +30,11 @@
   cursor: pointer;
   
   .logo-wrapper {
-    width: 40px;
+    width: auto;
     height: 40px;
-    background: var(--color-accent);
-    color: #FFFFFF;
-    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    .logo-svg {
-      width: 24px;
-      height: 24px;
-    }
   }
 
   .branding-text {

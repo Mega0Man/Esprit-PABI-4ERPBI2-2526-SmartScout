@@ -9,6 +9,7 @@ import { ScoutAssistantComponent } from './components/scout-assistant/scout-assi
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { IconComponent } from './components/icon/icon.component';
 import { KpiBadgeComponent } from './components/kpi-badge/kpi-badge.component';
+import { AppLogoComponent } from './components/app-logo/app-logo.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { KpiBadgeComponent } from './components/kpi-badge/kpi-badge.component';
     ScoutAssistantComponent,
     NavbarComponent,
     IconComponent,
-    KpiBadgeComponent
+    KpiBadgeComponent,
+    AppLogoComponent
   ],
   imports: [
     CommonModule,
@@ -31,7 +33,8 @@ import { KpiBadgeComponent } from './components/kpi-badge/kpi-badge.component';
     ScoutAssistantComponent,
     NavbarComponent,
     IconComponent,
-    KpiBadgeComponent
+    KpiBadgeComponent,
+    AppLogoComponent
   ]
 })
 export class SharedModule { }

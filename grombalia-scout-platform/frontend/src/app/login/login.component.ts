@@ -52,10 +52,10 @@ export class LoginComponent implements OnInit {
     },
     unit_leader: {
       name: 'Unit Leader',
-      color: '#2d8c59',
-      gradientFrom: '#1a523a',
-      gradientTo: '#0d4028',
-      lightColor: '#5cb885',
+      color: '#DC2626',
+      gradientFrom: '#991B1B',
+      gradientTo: '#7F1D1D',
+      lightColor: '#EF4444',
       icon: '🎯'
     }
   };
